@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.qoop</groupId>
+        <artifactId>qoop-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>qoop-container</artifactId>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <qoop-resource-open-api-doc.version>0.0.1-SNAPSHOT</qoop-resource-open-api-doc.version>
+        <qoop-logs.version>0.0.1-SNAPSHOT</qoop-logs.version>
+        <qoop-fault-handler-rest.version>0.0.1-SNAPSHOT</qoop-fault-handler-rest.version>
+        <qoop-resource-security.version>0.0.1-SNAPSHOT</qoop-resource-security.version>
+        <qoop-checker.version>0.0.1-SNAPSHOT</qoop-checker.version>
+        <qoop-eureka-client-discovery.version>0.0.1-SNAPSHOT</qoop-eureka-client-discovery.version>
+        <qoop-consul-client-discovery.version>0.0.1-SNAPSHOT</qoop-consul-client-discovery.version>
+        <qoop-response-unifier.version>0.0.1-SNAPSHOT</qoop-response-unifier.version>
+        <qoop-gateway-security.version>0.0.1-SNAPSHOT</qoop-gateway-security.version>
+        <qoop-validation-core.version>0.0.1-SNAPSHOT</qoop-validation-core.version>
+        <qoop-gateway-open-api-doc.version>0.0.1-SNAPSHOT</qoop-gateway-open-api-doc.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>e-development</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spring.profiles.active>development</spring.profiles.active>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>e-test</id>
+            <properties>
+                <spring.profiles.active>test</spring.profiles.active>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>e-stage</id>
+            <properties>
+                <spring.profiles.active>stage</spring.profiles.active>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>e-production</id>
+            <properties>
+                <spring.profiles.active>production</spring.profiles.active>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>ch-checker</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-checker</artifactId>
+                    <version>${qoop-checker.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-resource-open-api-doc</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-resource-open-api-doc</artifactId>
+                    <version>${qoop-resource-open-api-doc.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-gateway-open-api-doc</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-gateway-open-api-doc</artifactId>
+                    <version>${qoop-gateway-open-api-doc.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-logging</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-logs-core</artifactId>
+                    <version>${qoop-logs.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-eureka-client-discovery</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-eureka-client-discovery</artifactId>
+                    <version>${qoop-eureka-client-discovery.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-consul-client-discovery</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-consul-client-discovery</artifactId>
+                    <version>${qoop-consul-client-discovery.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-fault-handler-rest</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-fault-handler-rest</artifactId>
+                    <version>${qoop-fault-handler-rest.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-resource-security</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-resource-security</artifactId>
+                    <version>${qoop-resource-security.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-gateway-security</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-gateway-security</artifactId>
+                    <version>${qoop-gateway-security.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-response-unifier</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-response-unifier</artifactId>
+                    <version>${qoop-response-unifier.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-bean-filter</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-bean-filter-core</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-transactional</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-transaction-core</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-validation</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-validation-core</artifactId>
+                    <version>${qoop-validation-core.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

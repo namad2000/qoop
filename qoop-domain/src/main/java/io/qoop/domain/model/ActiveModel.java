@@ -1,0 +1,23 @@
+package io.qoop.domain.model;
+
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+/**
+ * Author: davood akbari
+ * Email: daak1365@gmail.com
+ * Created: 12/7/2025 4:59 PM
+ * Package: ir.online.commons.infrastructure.model
+ */
+
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class ActiveModel<ID> extends UpdateModel<ID> {
+
+    @Builder.Default
+    protected Boolean isActive = true;
+}

@@ -1,0 +1,10 @@
+discovery:
+  host: ${discovery.service.host}
+  port: ${discovery.service.port}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${discovery.host}:${discovery.port}/eureka
+  instance:
+    instance-id: ${spring.application.name}-${server.port}

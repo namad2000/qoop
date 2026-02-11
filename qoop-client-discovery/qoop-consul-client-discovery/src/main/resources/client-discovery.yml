@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    consul:
+      host: ${discovery.service.host}
+      port: ${discovery.service.port}
+      token: ${discovery.service.token}
+      discovery:
+        prefer-ip-address: ${discovery.self.prefer-ip-address:true}
+        ip-address: ${discovery.self.ip-address:8.8.6.5}
+        port: ${discovery.self.port:${server.port:${SELF_PORT:8480}}}
+        register: ${discovery.self.register:true}
+        instance-id: ${spring.application.name}-${discovery.self.port:${server.port:${SELF_PORT:8480}}}
+        enabled: ${discovery.self.enabled:true}
+        service-name: ${spring.application.name}
+        health-check-path: ${discovery.self.health-check-path:/actuator/health}
+        health-check-interval: ${discovery.self.health-check-interval:30s}
+        health-check-timeout: ${discovery.self.health-check-timeout:2s}

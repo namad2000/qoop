@@ -1,0 +1,2 @@
+io.qoop.jpa.config.JpaAuditingConfig
+io.qoop.jpa.config.SystemAuditorProvider

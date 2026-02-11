@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.qoop</groupId>
+        <artifactId>qoop-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>qoop</artifactId>
+
+    <packaging>pom</packaging>
+
+    <description>Quantum Object-Oriented Programming</description>
+
+    <modules>
+        <module>qoop-domain</module>
+        <module>qoop-application</module>
+        <module>qoop-data-jpa</module>
+        <module>qoop-fault-handler</module>
+        <module>qoop-utils</module>
+        <module>qoop-validation</module>
+        <module>qoop-open-api</module>
+        <module>qoop-property</module>
+        <module>qoop-container</module>
+        <module>qoop-mapper</module>
+        <module>qoop-transaction</module>
+        <module>qoop-bean-filter</module>
+        <module>qoop-messages</module>
+        <module>qoop-logs</module>
+        <module>qoop-client-discovery</module>
+        <module>qoop-checker</module>
+        <module>qoop-response-unifier</module>
+        <module>qoop-event-stream</module>
+        <module>qoop-security</module>
+    </modules>
+
+    <properties>
+        <qoop-messages.version>0.0.1-SNAPSHOT</qoop-messages.version>
+        <qoop-security-starter.version>0.0.1-SNAPSHOT</qoop-security-starter.version>
+        <qoop-logs.version>0.0.1-SNAPSHOT</qoop-logs.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-logs-api</artifactId>
+                <version>${qoop-logs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-messages</artifactId>
+                <version>${qoop-messages.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-security-starter</artifactId>
+                <version>${qoop-security-starter.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

@@ -1,0 +1,4 @@
+io.qoop.logs.AsyncConfig
+io.qoop.logs.TracingConfig
+io.qoop.logs.filter.CorrelationIdFilter
+io.qoop.logs.LoggingAutoConfig

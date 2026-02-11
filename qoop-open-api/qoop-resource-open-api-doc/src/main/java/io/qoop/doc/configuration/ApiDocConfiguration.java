@@ -1,0 +1,68 @@
+package io.qoop.doc.configuration;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import io.qoop.properties.factory.YamlPropertySourceFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+/**
+ * @author Davood Akbari - 1404
+ * daak1365@gmail.com
+ * daak1365@yahoo.com
+ * 09125188694
+ */
+
+@Configuration
+@PropertySource(value = "classpath:api-doc.yml", factory = YamlPropertySourceFactory.class)
+public class ApiDocConfiguration {
+    @Value("${doc.title}")
+    private String title;
+
+    @Value("${doc.version}")
+    private String version;
+
+    @Value("${doc.description}")
+    private String description;
+
+    @Value("${doc.server.url}")
+    private String serverUrl;
+
+    @Bean
+    public OpenAPI openAPI() {
+        final String securitySchemeName = "bearerAuth";
+
+        return new OpenAPI()
+                .info(new Info().title(title).version(version).description(description))
+                .addServersItem(new Server().url(serverUrl).description("Base Path"))
+
+                // تعریف نوع احراز هویت (JWT Bearer)
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                .components(
+                        new io.swagger.v3.oas.models.Components()
+                                .addSecuritySchemes(
+                                        securitySchemeName,
+                                        new SecurityScheme()
+                                                .name(securitySchemeName)
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
+                                                .in(SecurityScheme.In.HEADER)
+                                                .description("Enter JWT token starting with 'Bearer '")));
+    }
+
+//    @Bean
+//    public ParameterCustomizer hideCurrentUserParam() {
+//        return (parameterModel, methodParameter) -> {
+//            if (AuthenticatedUser.class.isAssignableFrom(methodParameter.getParameterType())) {
+//                return null;
+//            }
+//            return parameterModel;
+//        };
+//    }
+}
