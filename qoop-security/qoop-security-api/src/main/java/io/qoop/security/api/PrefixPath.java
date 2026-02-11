@@ -9,4 +9,6 @@ package io.qoop.security.api;
 
 public interface PrefixPath {
     String INTERNAL = "/internal";
+    String BACK_OFFICE = "/back-office";
+    String APPLICATION = "/app";
 }
