@@ -7,6 +7,7 @@
         <groupId>io.qoop</groupId>
         <artifactId>qoop-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>qoop-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>qoop</artifactId>
@@ -36,32 +37,6 @@
         <module>qoop-event-stream</module>
         <module>qoop-security</module>
         <module>qoop-bom</module>
+        <module>qoop-parent</module>
     </modules>
-
-    <properties>
-        <qoop-messages.version>0.0.1-SNAPSHOT</qoop-messages.version>
-        <qoop-security-starter.version>0.0.1-SNAPSHOT</qoop-security-starter.version>
-        <qoop-logs.version>0.0.1-SNAPSHOT</qoop-logs.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.qoop</groupId>
-                <artifactId>qoop-logs-api</artifactId>
-                <version>${qoop-logs.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.qoop</groupId>
-                <artifactId>qoop-messages</artifactId>
-                <version>${qoop-messages.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.qoop</groupId>
-                <artifactId>qoop-security-starter</artifactId>
-                <version>${qoop-security-starter.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
