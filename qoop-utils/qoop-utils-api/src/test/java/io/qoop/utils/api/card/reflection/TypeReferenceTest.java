@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/16/2025 7:36 PM
- * Package: ir.online.commons.util.card.reflection
+ * Package: io.qoop.util.card.reflection
  */
 
 class TypeReferenceTest {

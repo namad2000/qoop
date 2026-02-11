@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/7/2025 8:20 PM
- * Package: ir.online.commons.domain
+ * Package: io.qoop.domain
  */
 
 @Constraint

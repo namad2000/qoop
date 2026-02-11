@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 1/4/2026 4:38 PM
- * Package: ir.online.commons.security.resource.user
+ * Package: io.qoop.security.resource.user
  */
 
 

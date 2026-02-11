@@ -1,7 +1,7 @@
 package io.qoop.stream.publisher;
 
-import ir.online.commons.stream.api.Event;
-import ir.online.commons.stream.api.EventPublisher;
+import io.qoop.stream.api.Event;
+import io.qoop.stream.api.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

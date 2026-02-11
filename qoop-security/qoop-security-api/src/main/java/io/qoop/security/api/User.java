@@ -4,7 +4,7 @@ package io.qoop.security.api;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 1/4/2026 4:05 PM
- * Package: ir.online.commons.domain.model
+ * Package: io.qoop.domain.model
  */
 
 public interface User {

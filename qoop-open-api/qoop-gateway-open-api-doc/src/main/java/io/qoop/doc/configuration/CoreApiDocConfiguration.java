@@ -38,7 +38,7 @@ public class CoreApiDocConfiguration {
         Set<AbstractSwaggerUiConfigProperties.SwaggerUrl> swaggerUrls = new HashSet<>();
 
         for (SwaggerProperties.SwaggerUrl url : urls) {
-            swaggerUrls.add(new AbstractSwaggerUiConfigProperties.SwaggerUrl("Online-" + url.getName(), url.getUrl(), url.getName()));
+            swaggerUrls.add(new AbstractSwaggerUiConfigProperties.SwaggerUrl("qoop-" + url.getName(), url.getUrl(), url.getName()));
         }
 
         configProperties.setUrls(swaggerUrls);

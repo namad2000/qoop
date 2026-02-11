@@ -1,6 +1,6 @@
 package io.qoop.stream.subscriber.config;
 
-import ir.online.commons.stream.api.ErrorMessage;
+import io.qoop.stream.api.ErrorMessage;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;

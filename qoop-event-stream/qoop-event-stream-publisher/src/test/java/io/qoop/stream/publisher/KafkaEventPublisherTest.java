@@ -1,6 +1,6 @@
 package io.qoop.stream.publisher;
 
-import ir.online.commons.stream.api.Event;
+import io.qoop.stream.api.Event;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

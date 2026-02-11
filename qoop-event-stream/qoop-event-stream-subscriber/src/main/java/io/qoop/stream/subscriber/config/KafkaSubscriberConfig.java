@@ -1,6 +1,6 @@
 package io.qoop.stream.subscriber.config;
 
-import ir.online.commons.stream.starter.KafkaProperties;
+import io.qoop.stream.starter.KafkaProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration;

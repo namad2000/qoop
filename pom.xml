@@ -35,6 +35,7 @@
         <module>qoop-response-unifier</module>
         <module>qoop-event-stream</module>
         <module>qoop-security</module>
+        <module>qoop-bom</module>
     </modules>
 
     <properties>

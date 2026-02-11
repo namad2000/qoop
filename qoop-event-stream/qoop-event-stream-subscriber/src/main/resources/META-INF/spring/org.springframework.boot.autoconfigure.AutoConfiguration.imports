@@ -1,2 +1,2 @@
-ir.online.commons.stream.subscriber.config.KafkaSubscriberConfig
-ir.online.commons.stream.subscriber.config.EventSubscriberConfig
+io.qoop.stream.subscriber.config.KafkaSubscriberConfig
+io.qoop.stream.subscriber.config.EventSubscriberConfig

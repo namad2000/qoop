@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 1/4/2026 4:37 PM
- * Package: ir.online.commons.security.resource
+ * Package: io.qoop.security.resource
  */
 
 @RestController

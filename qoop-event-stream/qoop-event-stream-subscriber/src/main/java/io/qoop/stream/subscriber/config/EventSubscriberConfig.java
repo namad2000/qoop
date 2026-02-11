@@ -1,7 +1,7 @@
 package io.qoop.stream.subscriber.config;
 
-import ir.online.commons.stream.api.ErrorMessage;
-import ir.online.commons.stream.starter.KafkaProperties;
+import io.qoop.stream.api.ErrorMessage;
+import io.qoop.stream.starter.KafkaProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

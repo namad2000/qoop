@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/7/2025 4:59 PM
- * Package: ir.online.commons.infrastructure.model
+ * Package: io.qoop.infrastructure.model
  */
 
 @Data

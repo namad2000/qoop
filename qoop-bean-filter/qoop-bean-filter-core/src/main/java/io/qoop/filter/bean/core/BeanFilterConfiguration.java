@@ -17,7 +17,7 @@ import org.springframework.context.annotation.FilterType;
 
 @Configuration
 @ComponentScan(
-        basePackages = "ir.online",
+        basePackages = "io.qoop",
         includeFilters = {
                 @ComponentScan.Filter(
                         type = FilterType.ANNOTATION,

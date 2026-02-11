@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/29/2025 11:28 AM
- * Package: ir.online.commons.message
+ * Package: io.qoop.message
  */
 @SpringBootTest
 @ContextConfiguration(classes = {I18nConfig.class})

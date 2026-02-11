@@ -8,7 +8,7 @@ import java.util.Optional;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/15/2025 10:08 PM
- * Package: ir.online.commons.domain.repository
+ * Package: io.qoop.domain.repository
  */
 
 public interface DomainRepository<D, ID> {

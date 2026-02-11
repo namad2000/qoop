@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/28/2025 4:02 PM
- * Package: ir.online.commons.configuration
+ * Package: io.qoop.configuration
  */
 
 class BeanFilterConfigurationTest {

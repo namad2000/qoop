@@ -1,8 +1,8 @@
 package io.qoop.stream.subscriber.config;
 
-import ir.online.commons.stream.api.ErrorMessage;
-import ir.online.commons.stream.publisher.config.KafkaPublisherConfig;
-import ir.online.commons.stream.starter.KafkaProperties;
+import io.qoop.stream.api.ErrorMessage;
+import io.qoop.stream.publisher.config.KafkaPublisherConfig;
+import io.qoop.stream.starter.KafkaProperties;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;

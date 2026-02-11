@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 1/28/2026 8:53 PM
- * Package: ir.online.commons.mapper.core.config
+ * Package: io.qoop.mapper.core.config
  */
 
 @Configuration

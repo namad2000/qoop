@@ -13,7 +13,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/29/2025 11:09 AM
- * Package: ir.online.commons
+ * Package: io.qoop
  */
 
 @Configuration
