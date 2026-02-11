@@ -1,4 +1,4 @@
-package ir.online.commons.stream.publisher.config;
+package io.qoop.stream.publisher.config;
 
 import ir.online.commons.stream.starter.KafkaProperties;
 import lombok.RequiredArgsConstructor;

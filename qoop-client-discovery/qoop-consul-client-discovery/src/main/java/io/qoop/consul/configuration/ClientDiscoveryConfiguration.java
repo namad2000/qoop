@@ -1,4 +1,4 @@
-package ir.online.commons.consul.configuration;
+package io.qoop.consul.configuration;
 
 import io.qoop.properties.factory.YamlPropertySourceFactory;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;

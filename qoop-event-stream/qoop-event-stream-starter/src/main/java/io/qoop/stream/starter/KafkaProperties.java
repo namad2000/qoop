@@ -1,4 +1,4 @@
-package ir.online.commons.stream.starter;
+package io.qoop.stream.starter;
 
 import lombok.Data;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

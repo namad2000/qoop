@@ -1,4 +1,4 @@
-package ir.online.commons.stream.subscriber.config;
+package io.qoop.stream.subscriber.config;
 
 import ir.online.commons.stream.api.ErrorMessage;
 import org.springframework.kafka.annotation.KafkaListener;

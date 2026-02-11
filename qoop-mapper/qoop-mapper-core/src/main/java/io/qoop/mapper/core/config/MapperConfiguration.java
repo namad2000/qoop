@@ -26,13 +26,4 @@ public class MapperConfiguration {
     public JsonEngine jsonEngine() {
         return new JacksonJsonEngine(dateFormat);
     }
-
-    /**
-     * Static injection: Initialize Shift with the concrete implementation
-     * after the Spring Context is ready.
-     */
-//    @PostConstruct
-//    public void initShift() {
-//        Shift.setup(jsonEngine());
-//    }
 }

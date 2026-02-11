@@ -1,4 +1,4 @@
-package ir.online.commons.filter.bean.core;
+package io.qoop.filter.bean.core;
 
 
 import io.qoop.filter.bean.api.UseCaseService;

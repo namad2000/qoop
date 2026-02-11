@@ -1,4 +1,4 @@
-package ir.online.commons.eureka.configuration;
+package io.qoop.eureka.configuration;
 
 import io.qoop.properties.factory.YamlPropertySourceFactory;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;

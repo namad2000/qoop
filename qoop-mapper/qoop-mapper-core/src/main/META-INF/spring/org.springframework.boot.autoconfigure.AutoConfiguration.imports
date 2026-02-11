@@ -1,1 +1,2 @@
 io.qoop.mapper.core.config.MapperConfiguration
+io.qoop.mapper.core.shift.ShiftInitializer

@@ -1,4 +1,4 @@
-package ir.online.commons.stream.subscriber.config;
+package io.qoop.stream.subscriber.config;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

@@ -1,4 +1,4 @@
-package ir.online.commons.stream.api;
+package io.qoop.stream.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

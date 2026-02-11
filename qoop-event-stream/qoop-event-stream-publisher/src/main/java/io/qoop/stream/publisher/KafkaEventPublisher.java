@@ -1,4 +1,4 @@
-package ir.online.commons.stream.publisher;
+package io.qoop.stream.publisher;
 
 import ir.online.commons.stream.api.Event;
 import ir.online.commons.stream.api.EventPublisher;

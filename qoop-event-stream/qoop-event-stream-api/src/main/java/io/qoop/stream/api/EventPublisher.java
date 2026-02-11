@@ -1,4 +1,4 @@
-package ir.online.commons.stream.api;
+package io.qoop.stream.api;
 
 /**
  * Generic Event Publisher interface.

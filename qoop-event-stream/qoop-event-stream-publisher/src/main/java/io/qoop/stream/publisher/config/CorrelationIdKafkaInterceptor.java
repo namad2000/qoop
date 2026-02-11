@@ -1,4 +1,4 @@
-package ir.online.commons.stream.publisher.config;
+package io.qoop.stream.publisher.config;
 
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
