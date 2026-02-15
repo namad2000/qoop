@@ -41,6 +41,7 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.34</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+        <qoop-feign.version>0.0.1-SNAPSHOT</qoop-feign.version>
     </properties>
 
     <dependencyManagement>
@@ -306,6 +307,11 @@
                 <groupId>io.qoop</groupId>
                 <artifactId>qoop-data-jpa-core</artifactId>
                 <version>${qoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-feign</artifactId>
+                <version>${qoop-feign.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
