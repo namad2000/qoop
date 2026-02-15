@@ -38,5 +38,6 @@
         <module>qoop-security</module>
         <module>qoop-bom</module>
         <module>qoop-parent</module>
+        <module>qoop-feign</module>
     </modules>
 </project>
