@@ -1,7 +1,6 @@
 package io.qoop.filter.bean.core;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,8 +16,16 @@ class BeanFilterConfigurationTest {
 
     @Test
     void testBeansAreLoaded() {
-        // Create Spring context using the AppConfig class
-        ApplicationContext context = new AnnotationConfigApplicationContext(BeanFilterConfiguration.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+
+        // Manually add the property to the environment
+        org.springframework.boot.test.util.TestPropertyValues
+                .of("app.scan.packages=io.qoop")
+                .applyTo(context);
+
+        // Register the config and refresh
+        context.register(BeanFilterConfiguration.class);
+        context.refresh();
 
         // Verify that beans annotated with @DomainMapper are loaded
         SomeDomainMapper mapperBean = context.getBean(SomeDomainMapper.class);
