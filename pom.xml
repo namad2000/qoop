@@ -39,5 +39,6 @@
         <module>qoop-bom</module>
         <module>qoop-parent</module>
         <module>qoop-feign</module>
+        <module>qoop-filter-wrapper</module>
     </modules>
 </project>

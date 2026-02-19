@@ -1,0 +1,4 @@
+io.qoop.builder.specification.core.config.WebConfig
+io.qoop.builder.specification.core.FilterWrapperConverter
+io.qoop.builder.specification.core.SortWrapperConverter
+io.qoop.builder.specification.core.config.FilterConfig
