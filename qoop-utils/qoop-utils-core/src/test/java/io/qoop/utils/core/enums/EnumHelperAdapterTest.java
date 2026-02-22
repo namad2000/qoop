@@ -3,6 +3,7 @@ package io.qoop.utils.core.enums;
 
 import io.qoop.fault.handler.api.exception.DomainException;
 import io.qoop.fault.handler.api.exception.ExceptionCode;
+import io.qoop.utils.api.enums.EnumHelper;
 import io.qoop.utils.api.enums.EnumKeyValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,18 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EnumHelperAdapterTest {
 
-    private EnumHelperAdapter enumHelperAdapter;
 
     @BeforeEach
     void setUp() {
-        enumHelperAdapter = new EnumHelperAdapter();
-        enumHelperAdapter.setEnumPackage("io.qoop.utils.core.enums");
+        EnumHelper.enumPackage = "io.qoop.utils.core.enums";
     }
 
     @Test
     void testGetEnumValueFromString_Success() {
         String value = "ACTIVE";
-        TestStatus result = enumHelperAdapter.getEnumValueFromString(TestStatus.class, value);
+        TestStatus result = EnumHelper.getEnumValueFromString(TestStatus.class, value);
         assertEquals(TestStatus.ACTIVE, result);
     }
 
@@ -33,14 +32,14 @@ class EnumHelperAdapterTest {
     void testGetEnumValueFromString_InvalidValue_ShouldThrowException() {
         String invalidValue = "PENDING";
         DomainException exception = assertThrows(DomainException.class, () -> {
-            enumHelperAdapter.getEnumValueFromString(TestStatus.class, invalidValue);
+            EnumHelper.getEnumValueFromString(TestStatus.class, invalidValue);
         });
         assertEquals(ExceptionCode.BAD_REQUEST_ERROR, exception.getCode());
     }
 
     @Test
     void testGetEnumValues_Success() {
-        List<TestStatus> result = enumHelperAdapter.getEnumValues(TestStatus.class);
+        List<TestStatus> result = EnumHelper.getEnumValues(TestStatus.class);
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.contains(TestStatus.ACTIVE));
@@ -49,7 +48,7 @@ class EnumHelperAdapterTest {
 
     @Test
     void testGetEnumValueAsJson_Success() {
-        Map<String, Object> result = enumHelperAdapter.getEnumValueAsJson("TestStatus", 0);
+        Map<String, Object> result = EnumHelper.getEnumValueAsJson("TestStatus", 0);
         assertNotNull(result);
         assertEquals(1, result.get("code"));
         assertEquals("فعال", result.get("description"));
@@ -58,14 +57,14 @@ class EnumHelperAdapterTest {
     @Test
     void testGetEnumValueAsJson_InvalidOrdinal_ShouldThrowException() {
         DomainException exception = assertThrows(DomainException.class, () -> {
-            enumHelperAdapter.getEnumValueAsJson("TestStatus", 99);
+            EnumHelper.getEnumValueAsJson("TestStatus", 99);
         });
         assertEquals(ExceptionCode.BAD_REQUEST_ERROR, exception.getCode());
     }
 
     @Test
     void testGetEnumKeyValueMap_Success() {
-        Map<Integer, EnumKeyValue> result = enumHelperAdapter.getEnumKeyValueMap(TestStatus.class);
+        Map<Integer, EnumKeyValue> result = EnumHelper.getEnumKeyValueMap(TestStatus.class);
         assertNotNull(result);
         assertEquals(2, result.size());
         EnumKeyValue activeKeyValue = result.get(0);
@@ -75,7 +74,7 @@ class EnumHelperAdapterTest {
 
     @Test
     void testGetEnumValuesAsJson_Success() {
-        Object result = enumHelperAdapter.getEnumValuesAsJson("TestStatus");
+        Object result = EnumHelper.getEnumValuesAsJson("TestStatus");
         assertNotNull(result);
         assertTrue(result instanceof String);
         assertTrue(((String) result).contains("فعال"));

@@ -31,5 +31,28 @@
             <groupId>io.qoop</groupId>
             <artifactId>qoop-logs-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-utils-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-filter-wrapper-api</artifactId>
+        </dependency>
+
+        <!-- ========== TEST DEPENDENCIES ========== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- H2 Database (for running tests on RAM) -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

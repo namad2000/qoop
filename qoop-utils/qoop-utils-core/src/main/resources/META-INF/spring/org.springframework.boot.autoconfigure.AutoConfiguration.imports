@@ -1,1 +1,2 @@
 io.qoop.utils.core.jwt.JwtProviderAdapter
+io.qoop.utils.core.enums.EnumHelperInitializer
