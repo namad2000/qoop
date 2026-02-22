@@ -2,7 +2,6 @@ package io.qoop.builder.specification.core;
 
 import io.qoop.builder.specification.api.model.FilterWrapper;
 import io.qoop.builder.specification.api.model.SortWrapper;
-import io.qoop.builder.specification.core.config.FilterConfig;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;

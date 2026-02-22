@@ -26,7 +26,6 @@ public class SortWrapperConverter implements Converter<String, SortWrapper> {
         if (source == null || source.isBlank() || "null".equalsIgnoreCase(source)) {
             return new SortWrapper();
         }
-
         try {
             SortWrapper wrapper = new SortWrapper();
             JsonNode root = mapper.readTree(source);
@@ -34,16 +33,37 @@ public class SortWrapperConverter implements Converter<String, SortWrapper> {
 
             if (root.isArray()) {
                 for (JsonNode node : root) {
-                    sorts.add(mapper.convertValue(node, Sort.class));
+                    sorts.add(parseSortNode(node));
                 }
             } else {
-                sorts.add(mapper.convertValue(root, Sort.class));
+                sorts.add(parseSortNode(root));
             }
-
             wrapper.setSortSet(sorts);
             return wrapper;
         } catch (Exception e) {
             throw DomainException.of(SORT_INVALID_JSON, HttpStatus.BAD_REQUEST, source);
         }
+    }
+
+    private Sort parseSortNode(JsonNode node) {
+        String property = null;
+        Sort.Direction direction = null;
+
+        if (node.has("property")) {
+            property = node.get("property").asText();
+        }
+        if (node.has("direction")) {
+            String dirStr = node.get("direction").asText();
+            if (dirStr != null) {
+                for (Sort.Direction d : Sort.Direction.values()) {
+                    if (d.name().equalsIgnoreCase(dirStr) || (d.getName() != null && d.getName().equalsIgnoreCase(dirStr))) {
+                        direction = d;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return new Sort(direction, property);
     }
 }
