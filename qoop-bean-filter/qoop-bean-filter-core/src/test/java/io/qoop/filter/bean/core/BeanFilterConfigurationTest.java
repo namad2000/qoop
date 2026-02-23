@@ -20,7 +20,7 @@ class BeanFilterConfigurationTest {
 
         // Manually add the property to the environment
         org.springframework.boot.test.util.TestPropertyValues
-                .of("app.scan.packages=io.qoop")
+                .of("scan.packages=io.qoop")
                 .applyTo(context);
 
         // Register the config and refresh
