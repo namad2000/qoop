@@ -18,12 +18,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>io.qoop</groupId>
             <artifactId>qoop-security-api</artifactId>
         </dependency>
