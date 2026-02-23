@@ -4,12 +4,18 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import io.qoop.logs.LogKeys;
 import org.slf4j.MDC;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@ConditionalOnProperty(
+        name = "integration.internal",
+        havingValue = "true",
+        matchIfMissing = false
+)
 public class CorrelationInterceptor implements RequestInterceptor {
 
     @Override

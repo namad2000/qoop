@@ -29,8 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         FeignAutoConfiguration.class
 })
 @EnableFeignClients("io.qoop.feign")
-@TestPropertySource(properties = "integration.internal=true")
-class OpenFeignCorrelationIntegrationTest {
+@TestPropertySource(properties = "integration.internal=false")
+class OpenFeignNoCorrelationIntegrationTest {
 
     static MockWebServer mockWebServer;
 
@@ -51,20 +51,20 @@ class OpenFeignCorrelationIntegrationTest {
     }
 
     @Autowired
-    private TestClient client;
+    private TestClientNOT client;
 
     @Test
-    void should_send_correlation_id_header() throws Exception {
+    void should_NOT_send_correlation_id_header() throws Exception {
         mockWebServer.enqueue(new MockResponse().setBody("OK"));
         MDC.put(LogKeys.MDC_KEY, "integration-123");
         client.call();
         RecordedRequest request = mockWebServer.takeRequest();
-        assertThat(request.getHeader(LogKeys.CORRELATION_ID_HEADER)).isEqualTo("integration-123");
+        assertThat(request.getHeader(LogKeys.CORRELATION_ID_HEADER)).isNull();
         MDC.clear();
     }
 
-    @FeignClient(name = "testClient", url = "${test.url}")
-    interface TestClient {
+    @FeignClient(name = "testClientNOT", url = "${test.url}")
+    interface TestClientNOT {
         @GetMapping("/test")
         String call();
     }
