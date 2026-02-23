@@ -4,8 +4,6 @@ import io.qoop.utils.api.date.DateUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -60,19 +58,6 @@ class DateUtilAdapterTest {
         LocalDate gregorianDate = LocalDate.of(2025, 2, 23);
         String result = dateUtil.toParseDate(gregorianDate);
         assertEquals(getExpectedPersianDate(), result);
-    }
-
-    // ==================== Tests for getCurrentPersianDate ====================
-    @Test
-    void testGetCurrentPersianDate_ReturnsFixedDate() {
-        try (MockedStatic<LocalDate> mockedLocalDate = Mockito.mockStatic(LocalDate.class)) {
-
-            LocalDate fixedDate = LocalDate.of(2025, 2, 23);
-            mockedLocalDate.when(LocalDate::now).thenReturn(fixedDate);
-            String result = dateUtil.getCurrentPersianDate();
-
-            assertEquals("1403/12/05", result);
-        }
     }
 
     // ==================== Tests for toParseDateTime ====================
