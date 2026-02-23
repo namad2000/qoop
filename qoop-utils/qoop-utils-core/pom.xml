@@ -44,6 +44,11 @@
         </dependency>
 
         <dependency>
+            <groupId>net.time4j</groupId>
+            <artifactId>time4j-base</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.qoop</groupId>
             <artifactId>qoop-fault-handler-api</artifactId>
         </dependency>
