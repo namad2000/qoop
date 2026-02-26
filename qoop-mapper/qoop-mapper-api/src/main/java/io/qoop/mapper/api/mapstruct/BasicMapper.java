@@ -14,23 +14,24 @@ public interface BasicMapper<SOURCE, TARGET> {
     // Example: UserDto -> User, User -> CreateUserCommand
     SOURCE toSource(TARGET target);
 
+
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    default Optional<TARGET> toOptionalTarget(Optional<SOURCE> optionalSource) {
+    default Optional<TARGET> toTarget(Optional<SOURCE> optionalSource) {
         return optionalSource.map(this::toTarget);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    default Optional<SOURCE> toOptionalSource(Optional<TARGET> optionalTarget) {
+    default Optional<SOURCE> toSource(Optional<TARGET> optionalTarget) {
         return optionalTarget.map(this::toSource);
     }
 
     // Converts a List of Source objects to a List of Target objects
-    default List<TARGET> toTargetList(List<SOURCE> sourceList) {
+    default List<TARGET> toTarget(List<SOURCE> sourceList) {
         return sourceList.stream().map(this::toTarget).collect(Collectors.toList());
     }
 
     // Converts a List of Target objects to a List of Source objects
-    default List<SOURCE> toSourceList(List<TARGET> targetList) {
+    default List<SOURCE> toSource(List<TARGET> targetList) {
         return targetList.stream().map(this::toSource).collect(Collectors.toList());
     }
 }

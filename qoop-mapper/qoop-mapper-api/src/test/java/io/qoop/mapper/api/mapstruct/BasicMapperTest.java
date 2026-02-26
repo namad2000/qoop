@@ -93,13 +93,13 @@ class BasicMapperTest {
     }
 
     @Test
-    void testToOptionalTarget_whenOptionalSourceIsPresent_shouldReturnMappedTarget() {
+    void testToOptionalTarget_whenSourceIsPresent_shouldReturnMappedTarget() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<CreateUserCommand> optionalCommand = Optional.of(new CreateUserCommand("Sara", "sara@example.com"));
 
         // Act
-        Optional<User> result = mapper.toOptionalTarget(optionalCommand);
+        Optional<User> result = mapper.toTarget(optionalCommand);
 
         // Assert
         assertTrue(result.isPresent());
@@ -107,26 +107,26 @@ class BasicMapperTest {
     }
 
     @Test
-    void testToOptionalTarget_whenOptionalSourceIsEmpty_shouldReturnEmptyOptional() {
+    void testToOptionalTarget_whenOptionalSourceIsEmpty_shouldReturnEmpty() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<CreateUserCommand> optionalCommand = Optional.empty();
 
         // Act
-        Optional<User> result = mapper.toOptionalTarget(optionalCommand);
+        Optional<User> result = mapper.toTarget(optionalCommand);
 
         // Assert
         assertTrue(result.isEmpty());
     }
 
     @Test
-    void testToOptionalSource_whenOptionalTargetIsPresent_shouldReturnMappedSource() {
+    void testToOptionalSource_whenTargetIsPresent_shouldReturnMappedSource() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<User> optionalUser = Optional.of(new User("Mohammad", "mohammad@example.com"));
 
         // Act
-        Optional<CreateUserCommand> result = mapper.toOptionalSource(optionalUser);
+        Optional<CreateUserCommand> result = mapper.toSource(optionalUser);
 
         // Assert
         assertTrue(result.isPresent());
@@ -134,20 +134,20 @@ class BasicMapperTest {
     }
 
     @Test
-    void testToOptionalSource_whenOptionalTargetIsEmpty_shouldReturnEmptyOptional() {
+    void testToOptionalSource_whenOptionalTargetIsEmpty_shouldReturnEmpty() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<User> optionalUser = Optional.empty();
 
         // Act
-        Optional<CreateUserCommand> result = mapper.toOptionalSource(optionalUser);
+        Optional<CreateUserCommand> result = mapper.toSource(optionalUser);
 
         // Assert
         assertFalse(result.isPresent());
     }
 
     @Test
-    void testToTargetList_whenSourceListIsProvided_shouldReturnTargetList() {
+    void testToTargetList_whenSourceListIsProvided_shouldReturnTarget() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         List<CreateUserCommand> commands = List.of(
@@ -156,7 +156,7 @@ class BasicMapperTest {
         );
 
         // Act
-        List<User> result = mapper.toTargetList(commands);
+        List<User> result = mapper.toTarget(commands);
 
         // Assert
         assertNotNull(result);
@@ -166,13 +166,13 @@ class BasicMapperTest {
     }
 
     @Test
-    void testToTargetList_whenSourceListIsEmpty_shouldReturnEmptyList() {
+    void testToTargetList_whenSourceListIsEmpty_shouldReturnEmpty() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         List<CreateUserCommand> commands = List.of();
 
         // Act
-        List<User> result = mapper.toTargetList(commands);
+        List<User> result = mapper.toTarget(commands);
 
         // Assert
         assertNotNull(result);
@@ -180,7 +180,7 @@ class BasicMapperTest {
     }
 
     @Test
-    void testToSourceList_whenTargetListIsProvided_shouldReturnSourceList() {
+    void testToSourceList_whenTargetListIsProvided_shouldReturnSource() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         List<User> users = List.of(
@@ -189,7 +189,7 @@ class BasicMapperTest {
         );
 
         // Act
-        List<CreateUserCommand> result = mapper.toSourceList(users);
+        List<CreateUserCommand> result = mapper.toSource(users);
 
         // Assert
         assertNotNull(result);
