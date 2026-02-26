@@ -2,58 +2,52 @@ package io.qoop.security.resource.user;
 
 import io.qoop.security.api.CurrentUser;
 import io.qoop.security.api.User;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-
-@Aspect
 @Component
-public class CurrentUserAspect {
+public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    @Around("@annotation(io.qoop.security.api.CurrentUser) || execution(* *(.., @io.qoop.security.api.CurrentUser (*), ..))")
-    public Object injectCurrentUser(ProceedingJoinPoint joinPoint) throws Throwable {
-
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        Parameter[] parameters = method.getParameters();
-        Object[] args = joinPoint.getArgs();
-
-        for (int i = 0; i < parameters.length; i++) {
-            if (parameters[i].isAnnotationPresent(CurrentUser.class)) {
-                if (args[i] == null) {
-                    args[i] = resolveCurrentUser();
-                }
-            }
-        }
-
-        return joinPoint.proceed(args);
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        // Check if the parameter has @CurrentUser annotation and is of type User
+        return parameter.hasParameterAnnotation(CurrentUser.class) &&
+                User.class.isAssignableFrom(parameter.getParameterType());
     }
 
-    public Object resolveCurrentUser() {
+    @Override
+    public Object resolveArgument(MethodParameter parameter,
+                                  ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  WebDataBinderFactory binderFactory) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // Return system user if not authenticated
         if (authentication == null || !authentication.isAuthenticated()) {
             return AuthenticatedUser.builder()
                     .username(User.SYSTEM_USER)
                     .build();
         }
 
+        // Handle JWT Authentication
         if (authentication instanceof JwtAuthenticationToken jwtToken) {
             Jwt jwt = jwtToken.getToken();
 
+            // Extract roles as a String array
             String[] roles = authentication.getAuthorities().stream()
                     .map(Object::toString)
                     .toArray(String[]::new);
 
+            // Use builder to construct the full user object
             return AuthenticatedUser.builder()
                     .username(jwt.getSubject())
                     .organization(jwt.getClaimAsString("organization"))
@@ -63,6 +57,7 @@ public class CurrentUserAspect {
                     .build();
         }
 
+        // Fallback for other authentication types
         return AuthenticatedUser.builder()
                 .username(authentication.getName())
                 .build();

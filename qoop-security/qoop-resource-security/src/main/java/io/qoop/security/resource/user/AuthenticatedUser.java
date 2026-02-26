@@ -1,13 +1,12 @@
 package io.qoop.security.resource.user;
 
-
 import io.qoop.security.api.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 public class AuthenticatedUser implements User {
     private final String username;
