@@ -21,4 +21,6 @@ public interface DomainRepository<D, ID> {
     PageData<D> findAll(Integer pageNumber, Integer pageSize);
 
     void delete(D domain, boolean logical);
+
+    void delete(D domain);
 }
