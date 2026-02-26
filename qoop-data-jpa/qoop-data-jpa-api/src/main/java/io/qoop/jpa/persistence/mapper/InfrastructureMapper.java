@@ -7,7 +7,7 @@ package io.qoop.jpa.persistence.mapper;
  * Package: io.qoop.infrastructure.persistence.mapper
  */
 
-public interface CommonsInfrastructureMapper<D, E> {
+public interface InfrastructureMapper<D, E> {
 
     D toDomain(E e);
 
