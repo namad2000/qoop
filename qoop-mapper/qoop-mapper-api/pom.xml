@@ -11,4 +11,10 @@
 
     <artifactId>qoop-mapper-api</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-domain</artifactId>
+        </dependency>
+    </dependencies>
 </project>

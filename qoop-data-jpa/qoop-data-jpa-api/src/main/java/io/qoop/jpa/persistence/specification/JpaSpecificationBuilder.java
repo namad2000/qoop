@@ -22,7 +22,8 @@ public interface JpaSpecificationBuilder<T, ID> extends JpaSpecificationExecutor
 
     default Page<T> findAll(FilterWrapper filterWrapper,
                             SortWrapper sortWrapper,
-                            Integer start, Integer limit) {
+                            Integer start,
+                            Integer limit) {
 
         if (start == null || start < 0) {
             start = 0;

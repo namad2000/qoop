@@ -10,4 +10,11 @@
     </parent>
 
     <artifactId>qoop-domain</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-filter-wrapper-api</artifactId>
+        </dependency>
+    </dependencies>
 </project>

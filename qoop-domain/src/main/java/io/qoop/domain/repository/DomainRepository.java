@@ -1,7 +1,5 @@
 package io.qoop.domain.repository;
 
-import io.qoop.domain.model.PageData;
-
 import java.util.Optional;
 
 /**
@@ -17,10 +15,6 @@ public interface DomainRepository<D, ID> {
     Optional<D> findById(ID id);
 
     Boolean existById(ID id);
-
-    PageData<D> findAll(Integer pageNumber, Integer pageSize);
-
-    void delete(D domain, boolean logical);
 
     void delete(D domain);
 }
