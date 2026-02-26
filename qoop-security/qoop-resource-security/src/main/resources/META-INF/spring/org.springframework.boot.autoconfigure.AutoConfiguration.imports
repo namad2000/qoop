@@ -1,4 +1,3 @@
 io.qoop.security.resource.config.SecurityConfiguration
-io.qoop.security.resource.config.WebConfig
 io.qoop.security.resource.SecurityAuditorAware
-io.qoop.security.resource.user.CurrentUserArgumentResolver
+io.qoop.security.resource.user.CurrentUserAspect

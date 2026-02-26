@@ -8,9 +8,17 @@ package io.qoop.security.api;
  */
 
 public interface User {
-    String SYSTEM_USER = "system";
+    String SYSTEM_USER = "anonymous";
 
     default String getName() {
         return SYSTEM_USER;
     }
+
+    String getOrganization();
+
+    String[] getRoles();
+
+    boolean isVirtual();
+
+    boolean isAuthenticated();
 }
