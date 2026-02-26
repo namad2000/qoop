@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -196,5 +197,57 @@ class BasicMapperTest {
         assertEquals(2, result.size());
         assertEquals("Target1", result.get(0).getUsername());
         assertEquals("Target2", result.get(1).getUsername());
+    }
+
+    @Test
+    void testToTargetSet_whenSourceSetIsProvided_shouldReturnTargetSet() {
+        // Arrange
+        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        Set<CreateUserCommand> commands = Set.of(
+                new CreateUserCommand("User1", "user1@test.com"),
+                new CreateUserCommand("User2", "user2@test.com")
+        );
+
+        // Act
+        Set<User> result = mapper.toTarget(commands);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.stream().anyMatch(u -> u.getName().equals("User1")));
+        assertTrue(result.stream().anyMatch(u -> u.getName().equals("User2")));
+    }
+
+    @Test
+    void testToTargetSet_whenSourceSetIsEmpty_shouldReturnEmptySet() {
+        // Arrange
+        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        Set<CreateUserCommand> commands = Set.of();
+
+        // Act
+        Set<User> result = mapper.toTarget(commands);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testToSourceSet_whenTargetSetIsProvided_shouldReturnSourceSet() {
+        // Arrange
+        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        Set<User> users = Set.of(
+                new User("Target1", "target1@test.com"),
+                new User("Target2", "target2@test.com")
+        );
+
+        // Act
+        Set<CreateUserCommand> result = mapper.toSource(users);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.stream().anyMatch(c -> c.getUsername().equals("Target1")));
+        assertTrue(result.stream().anyMatch(c -> c.getUsername().equals("Target2")));
     }
 }
