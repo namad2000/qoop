@@ -281,21 +281,21 @@ class BasicMapperTest {
     void testToPageFilterData_whenPageIsProvided_shouldReturnPageFilterData() {
         // Arrange
         BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
-        List<User> userList = List.of(
-                new User("Ali", "ali@test.com"),
-                new User("Reza", "reza@test.com")
+        List<CreateUserCommand> commandList = List.of(
+                new CreateUserCommand("Ali", "ali@test.com"),
+                new CreateUserCommand("Reza", "reza@test.com")
         );
-        Page<User> page = new PageImpl<>(userList, Pageable.unpaged(), 50L);
+        Page<CreateUserCommand> page = new PageImpl<>(commandList, Pageable.unpaged(), 50L);
 
         // Act
-        PageFilterData<CreateUserCommand> result = mapper.toPageFilterData(page);
+        PageFilterData<User> result = mapper.toPageFilterData(page);
 
         // Assert
         assertNotNull(result);
         assertEquals(50L, result.getTotal());
         assertEquals(2, result.getList().size());
-        assertEquals("Ali", result.getList().get(0).getUsername());
-        assertEquals("Reza", result.getList().get(1).getUsername());
+        assertEquals("Ali", result.getList().get(0).getName());
+        assertEquals("Reza", result.getList().get(1).getName());
     }
 
     @Test
