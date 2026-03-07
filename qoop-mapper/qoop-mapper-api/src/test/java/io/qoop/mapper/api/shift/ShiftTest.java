@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -152,5 +155,135 @@ class ShiftTest {
 
         assertNotNull(newShift);
         assertNotNull(newShift.toBytes());
+    }
+
+    // ---------- toList ----------
+    @Test
+    void toList_normal() {
+        // Mock deserialization to return a list of objects
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn(List.of(new Dummy("john"), new Dummy("doe")));
+
+        // Mock serialization of individual items for the re-mapping process
+        when(engine.serialize(any(Dummy.class)))
+                .thenReturn("{\"name\":\"mock\"}".getBytes());
+
+        Shift<String> shift = Shift.just("[{\"name\":\"john\"}]");
+        List<Dummy> result = shift.toList(Dummy.class);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(engine, times(2)).deserialize(any(byte[].class), eq(Dummy.class));
+    }
+
+    @Test
+    void toList_empty_input() {
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn(Collections.emptyList());
+
+        Shift<String> shift = Shift.just("[]");
+        List<Dummy> result = shift.toList(Dummy.class);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void toList_input_is_not_collection() {
+        // Case where input is a single object, not a list
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn("single string object");
+
+        Shift<String> shift = Shift.just("single");
+        List<Dummy> result = shift.toList(Dummy.class);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    // ---------- mapList ----------
+    @Test
+    void mapList_applies_function() {
+        // Setup mock to return a list
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn(List.of(new Dummy("test")));
+        when(engine.serialize(any(Dummy.class)))
+                .thenReturn("{\"name\":\"test\"}".getBytes());
+
+        Shift<String> shift = Shift.just("[{\"name\":\"test\"}]");
+
+        List<Dummy> result = shift.mapList(Dummy.class, item -> {
+            item.name = "modified"; // Apply logic
+            return item;
+        });
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("modified", result.get(0).name);
+    }
+
+    // ---------- toSet ----------
+    @Test
+    void toSet_normal() {
+        // Mock deserialization to return a list of objects
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn(List.of(new Dummy("john"), new Dummy("doe")));
+
+        // Mock serialization of individual items for the re-mapping process
+        when(engine.serialize(any(Dummy.class)))
+                .thenReturn("{\"name\":\"mock\"}".getBytes());
+
+        Shift<String> shift = Shift.just("[{\"name\":\"john\"}]");
+        Set<Dummy> result = shift.toSet(Dummy.class);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(engine, times(2)).deserialize(any(byte[].class), eq(Dummy.class));
+    }
+
+    @Test
+    void toSet_empty_input() {
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn(Collections.emptyList());
+
+        Shift<String> shift = Shift.just("[]");
+        Set<Dummy> result = shift.toSet(Dummy.class);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void toSet_input_is_not_collection() {
+        // Case where input is a single object, not a list
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn("single string object");
+
+        Shift<String> shift = Shift.just("single");
+        Set<Dummy> result = shift.toSet(Dummy.class);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    // ---------- mapSet ----------
+    @Test
+    void mapSet_applies_function() {
+        // Setup mock to return a list
+        when(engine.deserialize(any(byte[].class), eq(Object.class)))
+                .thenReturn(List.of(new Dummy("test")));
+        when(engine.serialize(any(Dummy.class)))
+                .thenReturn("{\"name\":\"test\"}".getBytes());
+
+        Shift<String> shift = Shift.just("[{\"name\":\"test\"}]");
+
+        Set<Dummy> result = shift.mapSet(Dummy.class, item -> {
+            item.name = "modified"; // Apply logic
+            return item;
+        });
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertTrue(result.iterator().next().name.equals("modified"));
     }
 }
