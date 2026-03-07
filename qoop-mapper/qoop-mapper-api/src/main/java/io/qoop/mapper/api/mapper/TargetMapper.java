@@ -1,8 +1,4 @@
-package io.qoop.mapper.core.mapstruct;
-
-import io.qoop.domain.model.PageData;
-import io.qoop.domain.model.PageFilterData;
-import org.springframework.data.domain.Page;
+package io.qoop.mapper.api.mapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,22 +24,5 @@ public interface TargetMapper<S, T> {
     // Converts a Set of Source objects to a Set of Target objects
     default Set<T> toTarget(Set<S> sSet) {
         return sSet.stream().map(this::toTarget).collect(Collectors.toSet());
-    }
-
-    // Converts Page (Target) to PageFilterData (Source)
-    default PageFilterData<T> toPageFilterData(Page<S> page) {
-        return PageFilterData.of(
-                page.getTotalElements(),
-                toTarget(page.getContent())
-        );
-    }
-
-    // Converts Page (Source) to PageData (Target)
-    default PageData<T> toPageData(Page<S> page) {
-        return PageData.of(
-                page.getTotalElements(),
-                page.getTotalPages(),
-                toTarget(page.getContent())
-        );
     }
 }

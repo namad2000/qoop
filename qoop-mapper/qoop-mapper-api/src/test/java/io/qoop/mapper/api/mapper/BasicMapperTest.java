@@ -1,12 +1,7 @@
-package io.qoop.mapper.core.mapstruct;
+package io.qoop.mapper.api.mapper;
 
-import io.qoop.domain.model.PageData;
-import io.qoop.domain.model.PageFilterData;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -254,83 +249,5 @@ class BasicMapperTest {
         assertEquals(2, result.size());
         assertTrue(result.stream().anyMatch(c -> c.getUsername().equals("Target1")));
         assertTrue(result.stream().anyMatch(c -> c.getUsername().equals("Target2")));
-    }
-
-    @Test
-    void testToPage_whenPageFilterDataIsProvided_shouldReturnPage() {
-        // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
-        List<CreateUserCommand> commandList = List.of(
-                new CreateUserCommand("User1", "user1@test.com"),
-                new CreateUserCommand("User2", "user2@test.com")
-        );
-        PageFilterData<CreateUserCommand> pageFilterData = PageFilterData.of(100L, commandList);
-
-        // Act
-        Page<User> result = mapper.toPage(pageFilterData);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(100L, result.getTotalElements());
-        assertEquals(2, result.getContent().size());
-        assertEquals("User1", result.getContent().get(0).getName());
-        assertEquals("User2", result.getContent().get(1).getName());
-    }
-
-    @Test
-    void testToPageFilterData_whenPageIsProvided_shouldReturnPageFilterData() {
-        // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
-        List<CreateUserCommand> commandList = List.of(
-                new CreateUserCommand("Ali", "ali@test.com"),
-                new CreateUserCommand("Reza", "reza@test.com")
-        );
-        Page<CreateUserCommand> page = new PageImpl<>(commandList, Pageable.unpaged(), 50L);
-
-        // Act
-        PageFilterData<User> result = mapper.toPageFilterData(page);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(50L, result.getTotal());
-        assertEquals(2, result.getList().size());
-        assertEquals("Ali", result.getList().get(0).getName());
-        assertEquals("Reza", result.getList().get(1).getName());
-    }
-
-    @Test
-    void testToPageData_whenPageIsProvided_shouldReturnPageData() {
-        // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
-        List<CreateUserCommand> commandList = List.of(new CreateUserCommand("Sara", "sara@test.com"));
-        Page<CreateUserCommand> page = new PageImpl<>(commandList, Pageable.unpaged(), 10L);
-
-        // Act
-        PageData<User> result = mapper.toPageData(page);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(10L, result.getTotalElements());
-        assertEquals(10, result.getTotalPages());
-        assertEquals(1, result.getContents().size());
-        assertEquals("Sara", result.getContents().get(0).getName());
-    }
-
-    @Test
-    void testToPage_whenPageDataIsProvided_shouldReturnPage() {
-        // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
-        List<User> userList = List.of(new User("Hamed", "hamed@test.com"));
-        PageData<User> pageData = PageData.of(20L, 2, userList);
-
-        // Act
-        Page<CreateUserCommand> result = mapper.toPage(pageData);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(20L, result.getTotalElements());
-        assertEquals(20, result.getTotalPages());
-        assertEquals(1, result.getContent().size());
-        assertEquals("Hamed", result.getContent().get(0).getUsername());
     }
 }
