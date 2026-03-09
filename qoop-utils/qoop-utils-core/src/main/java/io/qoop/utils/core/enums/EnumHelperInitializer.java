@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EnumHelperInitializer {
 
-    @Value("${app.enum.package}")
+    @Value("${app.enum.package:}")
     private String enumPackage;
 
     @PostConstruct

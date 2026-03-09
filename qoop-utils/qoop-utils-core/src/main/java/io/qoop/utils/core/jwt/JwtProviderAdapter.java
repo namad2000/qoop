@@ -20,7 +20,7 @@ import static io.qoop.utils.api.jwt.JwtExceptionCode.TOKEN_EXPIRED;
 @Component
 public class JwtProviderAdapter implements JwtProvider {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:}")
     private String secret;
 
     @Override

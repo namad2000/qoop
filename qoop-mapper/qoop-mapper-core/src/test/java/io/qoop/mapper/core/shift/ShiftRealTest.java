@@ -5,6 +5,9 @@ import io.qoop.mapper.api.shift.Shift;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -143,5 +146,114 @@ class ShiftRealTest {
 
         Shift<String> shiftJsonNull = Shift.just((String) null);
         assertNull(shiftJsonNull.toObject());
+    }
+
+    // ---------- toList ----------
+    @Test
+    @Order(8)
+    void toList_real_conversion() {
+        List<UserEntity> users = new ArrayList<>();
+        users.add(createUser(1L, "Ali"));
+        users.add(createUser(2L, "Reza"));
+
+        Shift<List<UserEntity>> shift = Shift.just(users);
+        List<UserDTO> dtos = shift.toList(UserDTO.class);
+
+        assertNotNull(dtos);
+        assertEquals(2, dtos.size());
+        assertEquals("Ali", dtos.get(0).name);
+        assertEquals("Reza", dtos.get(1).name);
+    }
+
+    @Test
+    @Order(9)
+    void toList_real_empty() {
+        List<UserEntity> users = new ArrayList<>();
+        Shift<List<UserEntity>> shift = Shift.just(users);
+        List<UserDTO> dtos = shift.toList(UserDTO.class);
+
+        assertNotNull(dtos);
+        assertTrue(dtos.isEmpty());
+    }
+
+    // ---------- mapList ----------
+    @Test
+    @Order(10)
+    void mapList_real_with_logic() {
+        List<UserEntity> users = new ArrayList<>();
+        users.add(createUser(1L, "ali"));
+        users.add(createUser(2L, "reza"));
+
+        Shift<List<UserEntity>> shift = Shift.just(users);
+
+        List<UserDTO> result = shift.mapList(UserDTO.class, dto -> {
+            // Logic: Capitalize the first letter
+            dto.name = dto.name.substring(0, 1).toUpperCase() + dto.name.substring(1);
+            return dto;
+        });
+
+        assertNotNull(result);
+        assertEquals("Ali", result.get(0).name);
+        assertEquals("Reza", result.get(1).name);
+    }
+
+    // Helper method to create test data
+    private UserEntity createUser(Long id, String name) {
+        UserEntity u = new UserEntity();
+        u.id = id;
+        u.name = name;
+        u.createdAt = LocalDateTime.now();
+        return u;
+    }
+
+    // ---------- toSet ----------
+    @Test
+    @Order(12)
+    void toSet_real_conversion() {
+        List<UserEntity> users = new ArrayList<>();
+        users.add(createUser(1L, "Ali"));
+        users.add(createUser(2L, "Reza"));
+
+        Shift<List<UserEntity>> shift = Shift.just(users);
+        Set<UserDTO> dtos = shift.toSet(UserDTO.class);
+
+        assertNotNull(dtos);
+        assertEquals(2, dtos.size());
+        // Check existence since Set order is not guaranteed
+        assertTrue(dtos.stream().anyMatch(d -> d.name.equals("Ali")));
+        assertTrue(dtos.stream().anyMatch(d -> d.name.equals("Reza")));
+    }
+
+    @Test
+    @Order(13)
+    void toSet_real_empty() {
+        List<UserEntity> users = new ArrayList<>();
+        Shift<List<UserEntity>> shift = Shift.just(users);
+        Set<UserDTO> dtos = shift.toSet(UserDTO.class);
+
+        assertNotNull(dtos);
+        assertTrue(dtos.isEmpty());
+    }
+
+    // ---------- mapSet ----------
+    @Test
+    @Order(14)
+    void mapSet_real_with_logic() {
+        List<UserEntity> users = new ArrayList<>();
+        users.add(createUser(1L, "ali"));
+        users.add(createUser(2L, "reza"));
+
+        Shift<List<UserEntity>> shift = Shift.just(users);
+
+        Set<UserDTO> result = shift.mapSet(UserDTO.class, dto -> {
+            // Logic: Capitalize the first letter
+            dto.name = dto.name.substring(0, 1).toUpperCase() + dto.name.substring(1);
+            return dto;
+        });
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.stream().anyMatch(d -> d.name.equals("Ali")));
+        assertTrue(result.stream().anyMatch(d -> d.name.equals("Reza")));
     }
 }
