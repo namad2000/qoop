@@ -1,0 +1,19 @@
+package io.qoop.date.jalali;
+
+
+import io.qoop.fault.handler.api.exception.ExceptionCode;
+
+public interface JalaliExceptionCode extends ExceptionCode {
+    String INVALID_GREGORIAN_DATE_RANGE = "JALALI_DATE_01";
+    String INVALID_PERSIAN_MONTH_NUMBER = "JALALI_DATE_02";
+    String INVALID_PERSIAN_YEAR = "JALALI_DATE_03";
+    String INVALID_PERSIAN_YEAR_RANGE = "JALALI_DATE_04";
+    String INVALID_PERSIAN_MONTH_RANGE = "JALALI_DATE_05";
+    String INVALID_PERSIAN_DAY_RANGE = "JALALI_DATE_06";
+    String INVALID_HOUR_RANGE = "JALALI_DATE_07";
+    String INVALID_MINUTE_RANGE = "JALALI_DATE_08";
+    String INVALID_SECOND_RANGE = "JALALI_DATE_09";
+    String INVALID_MICROSECOND_RANGE = "JALALI_DATE_10";
+    String INVALID_VALUE_MONTH_OF_YEAR = "JALALI_MONTH_01";
+    String INVALID_VALUE_DAYOFWEEK = "JALALI_DAY_OF_WEEK_01";
+}

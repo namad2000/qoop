@@ -1,4 +1,4 @@
-package io.qoop.utils.api.date.qoop;
+package io.qoop.date.jalali;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +16,8 @@ public class DateConversionDailyTest {
         LocalDateTime currentDate = startDate;
 
         while (currentDate.isBefore(endDate)) {
-            JalaliDateTime parsiDate = DAConvertDate.convertToParsiDate(currentDate);
-            LocalDateTime convertedGregorian = DAConvertDate.convertToGregorian(parsiDate);
+            JalaliDateTime parsiDate = JalaliConverter.toJalali(currentDate);
+            LocalDateTime convertedGregorian = JalaliConverter.toGregorian(parsiDate);
             assertEquals(currentDate, convertedGregorian,
                     "Mismatch found at date: " + currentDate +
                             " -> Parsi: " + parsiDate.parsiStrDateTime());

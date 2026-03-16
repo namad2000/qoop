@@ -1,4 +1,4 @@
-package io.qoop.utils.api.date.qoop;
+package io.qoop.date.jalali;
 
 public class DAexception extends RuntimeException {
     public DAexception(String message) {

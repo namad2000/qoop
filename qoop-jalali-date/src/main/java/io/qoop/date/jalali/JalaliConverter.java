@@ -1,11 +1,11 @@
-package io.qoop.utils.api.date.qoop;
+package io.qoop.date.jalali;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
 
-// #coding: utf-8
+import static io.qoop.date.jalali.JalaliDayOfWeek.NUMBER_OF_DAYS_IN_WEEK;
+
+
 /*
   تبدیل تاریخ میلادی به خورشید -
   برنامه نویس : داود اکبری -
@@ -23,12 +23,7 @@ import java.util.List;
   .منظور از عدد تنها 128 یا 132 یا 29 و... دوره های مربوطه است
 */
 
-// import DAClassLibrary import DaParsiDateTime, DAexception
-// import math
-// import datetime
-// import macpath import split
-
-public class DAConvertDate {
+public final class JalaliConverter {
 
     // روز اول سال خورشیدی
     private static final LocalDateTime firstDay = LocalDateTime.of(622, 3, 22, 0, 0, 0);
@@ -107,32 +102,6 @@ public class DAConvertDate {
 
     // شماره سال های کبیسه
     private static final long[] arrYearNumber = {0, 5, 9, 13, 17, 21, 25, 29, 33, 37};
-    // نام برج های سال
-    public static final String[] parsiMonthName = {
-            "", // Index 0 placeholder
-            "فروردین",
-            "ارديبهشت",
-            "خرداد",
-            "تير",
-            "امرداد",
-            "شهريور",
-            "مهر",
-            "آبان",
-            "آذر",
-            "دى",
-            "بهمن",
-            "اسفند"
-    };
-    // روزهای هفته
-    private static final List<String> parsiDayOfWeek = Arrays.asList(
-            "شنبه",
-            "يكشنبه",
-            "دوشنبه",
-            "سه شنبه",
-            "چهارشنبه",
-            "پنجشنبه",
-            "جمعه"
-    );
 
     // تعداد روز ماه های نیمه اول سال
     private static final long daysCountYearFirstMid = 31;
@@ -142,10 +111,9 @@ public class DAConvertDate {
     private static final long monthCountEachYearMid = 6;
     // تعداد ماه هر سال
     private static final long monthCountEachYear = monthCountEachYearMid * 2;
-    // تعداد روز هفته
-    private static final long weekDaysCount = 7;
 
-    // --------
+    //-----------------------------------------------------------------------
+
     public static long which2820(long ParsiYear) {
         /*
           بدست آوردن اینکه سال مورد نظر در کدام دوره بزرگ است
@@ -160,7 +128,8 @@ public class DAConvertDate {
         return (long) Math.ceil(ParsiYear / (double) yearsCountBigAGE); // ما سقف عدد بدست آمده را می خواهیم زیرا رقم سمت راست به این معنی است که وارد دوره شده است
     }
 
-    // ---------    
+    //-----------------------------------------------------------------------
+
     public static long which2820AtDay(long LastDays) {
         /*
          بدست آوردن اینکه تعداد روز ورودی در  کدام دوره بزرگ است
@@ -170,7 +139,8 @@ public class DAConvertDate {
         return (long) Math.ceil((LastDays + daysCountBlinkYear) / (double) daysCountBigAGE);
     }
 
-    // ----------
+    //-----------------------------------------------------------------------
+
     public static long eraBigAGE(long ParsiYear) {
         /*
          بدست آوردن مبدا دروه ی بزرگ سالی که از ورودی گرفته می شود
@@ -181,7 +151,7 @@ public class DAConvertDate {
         return ((which2820(ParsiYear) - 1) * yearsCountBigAGE) - yearsCountblink;
     }
 
-    // -----------
+    //-----------------------------------------------------------------------
 
     public static long passedFromEraBigAGE(long ParsiYear) {
         /*
@@ -193,7 +163,7 @@ public class DAConvertDate {
         return ParsiYear - eraBigAGE(ParsiYear);
     }
 
-    // -----------
+    //-----------------------------------------------------------------------
 
     public static long which128Or132(long ParsiYear) {
         /*
@@ -206,7 +176,7 @@ public class DAConvertDate {
         return (long) Math.ceil(passedFromEraBigAGE(ParsiYear) / (double) yearsCount128);
     }
 
-    // ------------------   
+    //-----------------------------------------------------------------------
 
     public static long which128Or132AtDay(long LastDays) {
         /*
@@ -219,7 +189,7 @@ public class DAConvertDate {
         return (long) Math.ceil(RestDays);
     }
 
-    // --------------
+    //-----------------------------------------------------------------------
 
     public static long era128Or132(long ParsiYear) {
         /*
@@ -244,7 +214,7 @@ public class DAConvertDate {
         }
     }
 
-    // ---------------    
+    //-----------------------------------------------------------------------
 
     public static long passedFromEra128Or132(long ParsiYear) {
         /*
@@ -257,7 +227,7 @@ public class DAConvertDate {
         return (ParsiYear - era128Or132(ParsiYear));
     }
 
-    // --------------------
+    //-----------------------------------------------------------------------
 
     public static long whichAge33(long LastParsiYear) {
         /*
@@ -267,7 +237,7 @@ public class DAConvertDate {
         return (long) Math.ceil((LastParsiYear - yearsCount29) / (double) yearsCount33);
     }
 
-    // ----------------
+    //-----------------------------------------------------------------------
 
     public static long whichAge33FromRestDays(double RestDays) {
         /*
@@ -276,7 +246,7 @@ public class DAConvertDate {
         return (long) Math.ceil((RestDays - daysCount29) / (double) daysCount33);
     }
 
-    // ------------------------------ 
+    //-----------------------------------------------------------------------
 
     public static long passedAge33(long LastParsiYear) {
         /*
@@ -286,7 +256,7 @@ public class DAConvertDate {
         return (yearsCount29 + ((whichAge33(LastParsiYear) - 1) * yearsCount33));
     }
 
-    // -----------------------
+    //-----------------------------------------------------------------------
 
     public static long whatYearOFSubAge(long ParsiYear) {
         /*
@@ -317,7 +287,8 @@ public class DAConvertDate {
         }
     }
 
-    // -----------------------  
+    //-----------------------------------------------------------------------
+
     public static long whichSubAge29Or33Or37(long ParsiYear) {
         /*
          در کدام زیر دوره 29 یا 33 یا 37 است
@@ -346,7 +317,7 @@ public class DAConvertDate {
         }
     }
 
-    // -------------------------  
+    //-----------------------------------------------------------------------
 
     public static long whichSubAge29Or33Or37AtDay(long LastDays) {
         /*
@@ -381,9 +352,9 @@ public class DAConvertDate {
         }
     }
 
-    // ------------------------------------ 
+    //-----------------------------------------------------------------------
 
-    public static boolean leapYear(long ParsiYear) {
+    public static boolean isLeapYear(long ParsiYear) {
         /*
            شناسایی اینکه سال کبیسه است یا نه
            "ParsiYear"=>سال خورشیدی
@@ -394,37 +365,7 @@ public class DAConvertDate {
         return ((Year % yearsCount4 == 1) && (Year != 1));
     }
 
-    // ---------------
-
-    public static int parsiMonthDaysCount(long ParsiYear, int Month) {
-        /*
-         تعداد روز های برج های ایرانی
-         "ParsiYear"=>سال خورشیدی
-         "Month"=>برج خورشیدی
-         اینکه سال کبیسه است یا نه 
-         توضیح=>اگر شماره ماه از 1 کوچکتر و از 12 بزرگتر باشد خطا صادر می شود -یا- اگر سال از 1 کمتر باشد     
-        */
-
-        if ((Month > 12) || (Month < 1)) {
-            throw new DAexception(".شماره برح های فارسی از 1 شروع شده و به 12 ختم می شود");
-        }
-
-        if ((Month >= 1) && (Month <= 6)) {
-            return 31;
-        } else {
-            if (((Month >= 7) && (Month <= 11))) {
-                return 30;
-            } else {
-                if ((Month == 12) && (leapYear(ParsiYear))) {
-                    return 30;
-                } else {
-                    return 29;
-                }
-            }
-        }
-    }
-
-    // ---------------------------
+    //-----------------------------------------------------------------------
 
     public static long multipleLeapYear(long ParsiYear) {
         /*
@@ -451,7 +392,7 @@ public class DAConvertDate {
         // تعداد سال دقیق طی شده
 
         long LastFrom128Or132;
-        if (leapYear(ParsiYear)) { // سال طی شده از ابتدای دوره 128 یا 132 تا سال مورد نظر
+        if (isLeapYear(ParsiYear)) { // سال طی شده از ابتدای دوره 128 یا 132 تا سال مورد نظر
             LastFrom128Or132 = (passedFromEra128Or132(ParsiYear) - 1);
         } else {
             LastFrom128Or132 = passedFromEra128Or132(ParsiYear);
@@ -474,9 +415,9 @@ public class DAConvertDate {
         return Befor2820Now + Befor128Or132Now + LastFrom128Or132; // تعداد سال کبیسه کل
     }
 
-    // --------------------------
+    //-----------------------------------------------------------------------
 
-    public static JalaliDateTime dayToDate(long ParsiYear, long RestDay) {
+    public static JalaliDate dayToDate(long ParsiYear, long RestDay) {
         /*
          تبدیل روز به تاریخ خورشیدی با گرفتن سال و تعداد روز باقی مانده
          "ParsiYear"=>سال فارسی
@@ -488,7 +429,7 @@ public class DAConvertDate {
 
         long daysCountFirstMid = monthCountEachYearMid * daysCountYearFirstMid; // تعداد روز نیمه اول سال
         RestDay += 1;
-        boolean IsAYearEndDay = ((RestDay / daysCountAnomalyYear) == 1) && (!leapYear(ParsiYear)); // فهمیدن اینکه روز آخر هست و سال کبیسه نیست
+        boolean IsAYearEndDay = ((RestDay / daysCountAnomalyYear) == 1) && (!isLeapYear(ParsiYear)); // فهمیدن اینکه روز آخر هست و سال کبیسه نیست
         // به منظور ننوشتن دستورات شرطی تو در تو 30 یا 31 را به این صورت می شناسیم
         long MonthDaysCount = (long) (daysCountYearSecMid + (2 - Math.ceil(RestDay / (double) daysCountFirstMid)));
         long WhatIsAMid = (long) (RestDay / daysCountFirstMid); // صفر مشخص کننده نیمه اول و یک مشخص کننده نیمه دوم است
@@ -511,10 +452,10 @@ public class DAConvertDate {
             ParsiYear += 1;
         }
 
-        return new JalaliDateTime(ParsiYear, (int) Month, (int) RestDay, 0, 0, 0, 0);
+        return JalaliDate.of(ParsiYear, (short) Month, (short) RestDay);
     }
 
-    // --------------------------
+    //-----------------------------------------------------------------------
 
     public static long firstDayYear(long ParsiYear) {
         /*
@@ -525,13 +466,13 @@ public class DAConvertDate {
          توضیح=>اگر سال ورودی از 1 کمتر باشد خطاParsiMonthDaysCount صادر می شود   
         */
         long Days = multipleLeapYear(ParsiYear);
-        Days %= weekDaysCount;
-        Days += (((ParsiYear - 1) % weekDaysCount) + 5); // روز اول سال یک  پنج شنبه بوده و به همین دلیل با 5 جمع می کنیم
-        Days %= weekDaysCount;
+        Days %= NUMBER_OF_DAYS_IN_WEEK;
+        Days += (((ParsiYear - 1) % NUMBER_OF_DAYS_IN_WEEK) + 5); // روز اول سال یک  پنج شنبه بوده و به همین دلیل با 5 جمع می کنیم
+        Days %= NUMBER_OF_DAYS_IN_WEEK;
         return Days;
     }
 
-    // --------------------
+    //-----------------------------------------------------------------------
 
     public static long firstDayMonth(long ParsiYear, int MonthNumber) {
         /*
@@ -546,42 +487,30 @@ public class DAConvertDate {
         }
         long First = firstDayYear(ParsiYear); // روز اول سال مورد نظر
 
-        if (MonthNumber <= weekDaysCount) {
+        if (MonthNumber <= NUMBER_OF_DAYS_IN_WEEK) {
             First += ((MonthNumber - 1) * 3);
         } else {
             First += ((MonthNumber + 2) * 2);
         }
 
-        First %= weekDaysCount;
+        First %= NUMBER_OF_DAYS_IN_WEEK;
         return First;
     }
 
-    // ----------------------
+    //-----------------------------------------------------------------------
 
-    public static int dayOfWeekNumber(JalaliDateTime parsiDate) {
+    public static JalaliDayOfWeek dayOfWeekNumber(JalaliDate jalaliDate) {
         /*
          شماره روز هفته تاریخ مورد نظر
-         "parsiDate"=>تاریخ خورشیدی
+         "jalaliDate"=>تاریخ خورشیدی
 
          شماره روز هفته تاریخ مورد نظر 
         */
         // روز تاریخ را به این خاطر از یک کم می کنیم تا تعداد روز گذشته شده تا قبل از آن روز را بدست آوریم
-        return (int) ((firstDayMonth(parsiDate.getYear(), parsiDate.getMonth()) + (parsiDate.getDay() - 1)) % weekDaysCount);
+        return JalaliDayOfWeek.of((short) ((firstDayMonth(jalaliDate.year(), jalaliDate.monthValue()) + (jalaliDate.dayOfMonth() - (short) 1)) % NUMBER_OF_DAYS_IN_WEEK));
     }
 
-    // -------------------------
-
-    public static String dayOfWeekName(JalaliDateTime parsiDate) {
-        /*
-         نام خورشیدی روز تاریخ مورد نظر
-         "parsiDate"=>تاریخ خورشیدی
-
-         نام خورشیدی روز تاریخ مورد نظر    
-        */
-        return parsiDayOfWeek.get(dayOfWeekNumber(parsiDate));
-    }
-
-    // ------------------
+    //-----------------------------------------------------------------------
 
     public static int what5Or4(double LastDays) {
         /*
@@ -599,7 +528,8 @@ public class DAConvertDate {
         return What;
     }
 
-    // ----------------------------
+    //-----------------------------------------------------------------------
+
     public static Object[] daysToYear(long LastDays, long RestDays) {
         /*
          تبدیل روز ها ی گذشته شده به سال پارسی
@@ -656,8 +586,9 @@ public class DAConvertDate {
         return new Object[]{Year, (long) RestDaysVal};
     }
 
-    // ------------------------------
-    public static JalaliDateTime convertToParsiDate(LocalDateTime Date) {
+    //-----------------------------------------------------------------------
+
+    public static JalaliDateTime toJalali(LocalDateTime Date) {
         /*
          تبدیل تاریخ میلادی به خورشیدی
          "Date"=>تاریخ میلادی
@@ -678,17 +609,17 @@ public class DAConvertDate {
         return new JalaliDateTime(parsiDate.getYear(), parsiDate.getMonth(), parsiDate.getDay(), Date.getHour(), Date.getMinute(), Date.getSecond(), (int) (Date.getNano() / 1000));
     }
 
-    // ---------------------------------------
+    //-----------------------------------------------------------------------
 
     public static JalaliDateTime now() {
         /*
          تاریخ خورشیدی
         */
 
-        return convertToParsiDate(LocalDateTime.now());
+        return toJalali(LocalDateTime.now());
     }
 
-    public static LocalDateTime convertToGregorian(JalaliDateTime parsiDate) {
+    public static LocalDateTime toGregorian(JalaliDateTime parsiDate) {
         /*
           تبدیل تاریخ خورشیدی به میلادی
           "parsiDate"=>تاریخ فارسی
@@ -710,6 +641,8 @@ public class DAConvertDate {
 
         return LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), parsiDate.getHour(), parsiDate.getMinute(), parsiDate.getSecond(), parsiDate.getMicrosecond() * 1000);
     }
+
+    //-----------------------------------------------------------------------
 
     public static JalaliDateTime strToParsiDate(String str) {
         /*
