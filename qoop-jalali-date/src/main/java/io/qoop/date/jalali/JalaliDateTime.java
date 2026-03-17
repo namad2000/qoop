@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.time.*;
 import java.util.Objects;
 
-import static io.qoop.date.jalali.JalaliConverter.toJalali;
-
 /**
  * @author Davood Akbari - 1404
  * daak1365@gmail.com
@@ -50,7 +48,7 @@ public class JalaliDateTime implements Serializable {
      */
     public static JalaliDateTime now() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        return toJalaliDateTime(localDateTime);
+        return from(localDateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -63,7 +61,7 @@ public class JalaliDateTime implements Serializable {
      */
     public static JalaliDateTime now(ZoneId zone) {
         LocalDateTime localDateTime = LocalDateTime.now(zone);
-        return toJalaliDateTime(localDateTime);
+        return from(localDateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -338,7 +336,7 @@ public class JalaliDateTime implements Serializable {
     public JalaliDateTime plusHours(long hours) {
         LocalDateTime localDateTime = toLocalDateTime();
         LocalDateTime newLocalDateTime = localDateTime.plusHours(hours);
-        return toJalaliDateTime(newLocalDateTime);
+        return from(newLocalDateTime);
     }
 
     /**
@@ -353,7 +351,7 @@ public class JalaliDateTime implements Serializable {
     public JalaliDateTime plusMinutes(long minutes) {
         LocalDateTime localDateTime = toLocalDateTime();
         LocalDateTime newLocalDateTime = localDateTime.plusMinutes(minutes);
-        return toJalaliDateTime(newLocalDateTime);
+        return from(newLocalDateTime);
     }
 
     /**
@@ -368,7 +366,7 @@ public class JalaliDateTime implements Serializable {
     public JalaliDateTime plusSeconds(long seconds) {
         LocalDateTime localDateTime = toLocalDateTime();
         LocalDateTime newLocalDateTime = localDateTime.plusSeconds(seconds);
-        return toJalaliDateTime(newLocalDateTime);
+        return from(newLocalDateTime);
     }
 
     /**
@@ -383,7 +381,7 @@ public class JalaliDateTime implements Serializable {
     public JalaliDateTime plusNanos(long nanos) {
         LocalDateTime localDateTime = toLocalDateTime();
         LocalDateTime newLocalDateTime = localDateTime.plusNanos(nanos);
-        return toJalaliDateTime(newLocalDateTime);
+        return from(newLocalDateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -438,14 +436,5 @@ public class JalaliDateTime implements Serializable {
     @Override
     public String toString() {
         return date.toString() + " " + time.toString();
-    }
-
-    //-----------------------------------------------------------------------
-
-    //TODO : Desc ...
-    private static JalaliDateTime toJalaliDateTime(LocalDateTime newLocalDateTime) {
-        JalaliDate jalaliDate = toJalali(newLocalDateTime.toLocalDate());
-        LocalTime localTime = newLocalDateTime.toLocalTime();
-        return with(jalaliDate, localTime);
     }
 }
