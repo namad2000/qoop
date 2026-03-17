@@ -1,9 +1,11 @@
 package io.qoop.date.jalali;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import static io.qoop.date.jalali.JalaliDayOfWeek.NUMBER_OF_DAYS_IN_WEEK;
+import static io.qoop.date.jalali.JalaliExceptionCode.*;
 
 
 /*
@@ -26,7 +28,10 @@ import static io.qoop.date.jalali.JalaliDayOfWeek.NUMBER_OF_DAYS_IN_WEEK;
 public final class JalaliConverter {
 
     // روز اول سال خورشیدی
-    private static final LocalDateTime firstDay = LocalDateTime.of(622, 3, 22, 0, 0, 0);
+    /**
+     * The first-day-of-jalali-date
+     */
+    private static final LocalDate EPOCH = LocalDate.of(622, 3, 22);
     // سال های در نظر گرفته نشده - آغاز سال هجری خورشیدی
     private static final long yearsCountblink = 2346;
     // تعداد سال دوره بزرگ
@@ -122,7 +127,7 @@ public final class JalaliConverter {
          توضیح=>اگر سال ورودی از 1 کمتر باشد خطا صادر می شود
         */
         if (ParsiYear <= 0) {
-            throw new DAexception(".سال مورد قبول از یک شروع می شود");
+            throw JalaliDateTimeException.of(INVALID_PERSIAN_YEAR);
         }
         ParsiYear += yearsCountblink;
         return (long) Math.ceil(ParsiYear / (double) yearsCountBigAGE); // ما سقف عدد بدست آمده را می خواهیم زیرا رقم سمت راست به این معنی است که وارد دوره شده است
@@ -483,7 +488,7 @@ public final class JalaliConverter {
          توضیح=>اگر شماره ماه از 1 کوچکتر و از 12 بزرگتر باشد خطا صادر می شود
         */
         if ((MonthNumber > 12) || (MonthNumber < 1)) {
-            throw new DAexception(".شماره برح های فارسی از 1 شروع شده و به 12 ختم می شود");
+            throw JalaliDateTimeException.of(INVALID_PERSIAN_MONTH_NUMBER);
         }
         long First = firstDayYear(ParsiYear); // روز اول سال مورد نظر
 
@@ -583,102 +588,102 @@ public final class JalaliConverter {
             RestDaysVal -= 1;
         }
         Year = (Year + arrYearNumber[SubAge5Or4] + Inside5Or4 + 1) - yearsCountblink; // با یک به خاطر اینکه از سال جدید آغاز شود چمع شد و از 2346 به این دلیل کم شد که سال های نادیده است
+
         return new Object[]{Year, (long) RestDaysVal};
     }
 
     //-----------------------------------------------------------------------
 
-    public static JalaliDateTime toJalali(LocalDateTime Date) {
+    public static JalaliDate toJalali(LocalDate date) {
         /*
          تبدیل تاریخ میلادی به خورشیدی
-         "Date"=>تاریخ میلادی
+         "date"=>تاریخ میلادی
 
          تاریخ خورشیدی 
          توضیح=>اگر تاریخ ورودی از تاریخ - 0622/03/22 - میلادی کمتر باشد خطا صادر می شود
         */
-        LocalDateTime epoch = LocalDateTime.of(622, 3, 22, 0, 0, 0);
-        if (Date.isBefore(epoch)) {
-            throw new DAexception(".تاریخ 0622/03/22 میلادی برار با روز اول تاریخ خورشیدی است" + "\n .باید تاریخ ورودی برابر یا بزرگتر از این تاریخ باشد");
+
+        if (date == null) {
+            return null;
         }
+
+        if (date.isBefore(EPOCH)) {
+            throw JalaliDateTimeException.of(INVALID_GREGORIAN_DATE_RANGE);
+        }
+
         long RestDays = 0;
-        long LastDays = ChronoUnit.DAYS.between(firstDay, Date); // تعداد روز گذشته شده از سال یک تا تاریخ ورودی #1/01/01=622/03/22
+        long LastDays = ChronoUnit.DAYS.between(EPOCH, date); // تعداد روز گذشته شده از سال یک تا تاریخ ورودی #1/01/01=622/03/22
         Object[] FirstYearsAndLastDays = daysToYear(LastDays, RestDays); // بدست آوردن سال ابتدای سال تاریخ مورد نظر
 
-        // parsiDate = DayToDate(FirstYears, RestDays)
-        JalaliDateTime parsiDate = dayToDate((long) FirstYearsAndLastDays[0], (long) FirstYearsAndLastDays[1]);
-        return new JalaliDateTime(parsiDate.getYear(), parsiDate.getMonth(), parsiDate.getDay(), Date.getHour(), Date.getMinute(), Date.getSecond(), (int) (Date.getNano() / 1000));
+        JalaliDate jalaliDate = dayToDate((long) FirstYearsAndLastDays[0], (long) FirstYearsAndLastDays[1]);
+        return JalaliDate.of(jalaliDate.year(), jalaliDate.monthValue(), jalaliDate.dayOfMonth());
     }
 
     //-----------------------------------------------------------------------
 
-    public static JalaliDateTime now() {
-        /*
-         تاریخ خورشیدی
-        */
-
-        return toJalali(LocalDateTime.now());
-    }
-
-    public static LocalDateTime toGregorian(JalaliDateTime parsiDate) {
+    public static LocalDate toGregorian(JalaliDate jalaliDate) {
         /*
           تبدیل تاریخ خورشیدی به میلادی
-          "parsiDate"=>تاریخ فارسی
+          "jalaliDate"=>تاریخ فارسی
           تبدیل تاریخ خورشیدی به میلادی    
         */
-        long MultiplesAnomaly = multipleLeapYear(parsiDate.getYear()) - anomalyYearsCountBlink; // تعداد سال کبیسه کل منهای تعداد سال کبیسه نادیده
-        long Days = ((parsiDate.getYear() - 1) * daysCountNormalYear) + MultiplesAnomaly; // تعداد کل روز های طی شده تا ابتدای سال مورد نظر
+        long MultiplesAnomaly = multipleLeapYear(jalaliDate.year()) - anomalyYearsCountBlink; // تعداد سال کبیسه کل منهای تعداد سال کبیسه نادیده
+        long Days = ((jalaliDate.year() - 1) * daysCountNormalYear) + MultiplesAnomaly; // تعداد کل روز های طی شده تا ابتدای سال مورد نظر
 
         long ExtraDays;
-        if (parsiDate.getMonth() > monthCountEachYearMid) {
+        if (jalaliDate.monthValue() > monthCountEachYearMid) {
             ExtraDays = monthCountEachYearMid;
         } else {
-            ExtraDays = (parsiDate.getMonth() - 1);
+            ExtraDays = (jalaliDate.monthValue() - 1);
         }
 
-        long OtherDays = ((parsiDate.getMonth() - 1) * daysCountYearSecMid) + ExtraDays; // ماه ها تا قبل از ماه مورد نظر ضرب در 30 و با روز اضافی مر بوط به فصل بهار و تابستان جمع شده
-        Days += ((OtherDays + parsiDate.getDay()) - 1); // بدین دلیل از یک کم می شود چون 1/1/1 یک روز کامل است و در نظر گرفته شده است و می خواهیم از 0/0/0 حساب شود
-        LocalDateTime date = firstDay.plusDays(Days);
+        long OtherDays = ((jalaliDate.monthValue() - 1) * daysCountYearSecMid) + ExtraDays; // ماه ها تا قبل از ماه مورد نظر ضرب در 30 و با روز اضافی مر بوط به فصل بهار و تابستان جمع شده
+        Days += ((OtherDays + jalaliDate.dayOfMonth()) - 1); // بدین دلیل از یک کم می شود چون 1/1/1 یک روز کامل است و در نظر گرفته شده است و می خواهیم از 0/0/0 حساب شود
 
-        return LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), parsiDate.getHour(), parsiDate.getMinute(), parsiDate.getSecond(), parsiDate.getMicrosecond() * 1000);
+        return EPOCH.plusDays(Days);
     }
 
     //-----------------------------------------------------------------------
 
-    public static JalaliDateTime strToParsiDate(String str) {
+    public static JalaliDate toJalali(String str) {
         /*
         تبدیل رشته به تاریخ خورشیدی
         */
         try {
-            String[] dt = str.split(" ");
 
-            String[] splitDate = dt[0].split("/");
+            String[] splitDate = str.split("/");
 
-            int y = Integer.parseInt(splitDate[0]);
-            int m = Integer.parseInt(splitDate[1]);
-            int d = Integer.parseInt(splitDate[2]);
+            long y = Long.parseLong(splitDate[0]);
+            short m = Short.parseShort(splitDate[1]);
+            short d = Short.parseShort(splitDate[2]);
 
-            int hh = 0, mm = 0, ss = 0, micro = 0;
-
-            if (dt.length > 1) {
-                String[] splitTime = dt[1].split(":");
-
-                hh = Integer.parseInt(splitTime[0]);
-                mm = Integer.parseInt(splitTime[1]);
-
-                if (splitTime.length > 2) {
-                    String[] splitSM = splitTime[2].split("\\.");
-
-                    ss = Integer.parseInt(splitSM[0]);
-                    if (splitSM.length > 1) {
-                        micro = Integer.parseInt(splitSM[1]);
-                    }
-                }
-            }
-
-            return new JalaliDateTime(y, m, d, hh, mm, ss, micro);
+            return JalaliDate.of(y, m, d);
 
         } catch (Exception e) {
-            throw new DAexception("Please enter correct date and time!?");
+            throw JalaliDateTimeException.of(INVALID_DATE);
         }
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Obtains the current date from the LocalDate.now() in the default time-zone.
+     *
+     * @return the current date using the LocalDate.now() and default time-zone, not null
+     */
+    public static JalaliDate now() {
+        return toJalali(LocalDate.now());
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Obtains the current date from the LocalDate.now(ZoneId) in the specified time-zone.
+     *
+     * @param zone the zone ID to use, not null
+     * @return the current date using the LocalDate.now(ZoneId), not null
+     */
+    public static JalaliDate now(ZoneId zone) {
+        return toJalali(LocalDate.now(zone));
     }
 }

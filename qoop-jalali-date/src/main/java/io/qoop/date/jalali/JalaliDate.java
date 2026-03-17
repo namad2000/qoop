@@ -17,16 +17,16 @@ import static io.qoop.date.jalali.JalaliExceptionCode.*;
 
 public class JalaliDate implements Serializable {
     /**
-     * The minimum supported {@code JalaliDate}, '01-01-01'.
+     * The minimum supported {@code JalaliDate}, '1/01/01'.
      * This could be used by an application as a "far past" date.
      */
     public static final JalaliDate MIN = JalaliDate.of(1L, (short) 1, (short) 1);
 
     /**
-     * The maximum supported {@code LocalDate}, 'Long.MAX_VALUE-12-31'.
+     * The maximum supported {@code LocalDate}, 'Long.MAX_VALUE/12/29'.
      * This could be used by an application as a "far future" date.
      */
-    public static final JalaliDate MAX = JalaliDate.of(Long.MAX_VALUE, (short) 12, (short) 31);
+    public static final JalaliDate MAX = JalaliDate.of(Long.MAX_VALUE, (short) 12, (short) 29);
 
     /**
      * The year.
@@ -63,7 +63,7 @@ public class JalaliDate implements Serializable {
      * @return the current date using the LocalDate.now(ZoneId), not null
      */
     public static JalaliDate now(ZoneId zone) {
-        return now(LocalDate.now(zone));
+        return JalaliConverter.now(zone);
     }
 
     //-----------------------------------------------------------------------
@@ -279,8 +279,8 @@ public class JalaliDate implements Serializable {
             return this;
         }
 
-        var gregorian = toGregorian(this);
-        var updatedGregorian = gregorian.plus(Duration.ofDays(daysToAdd));
+        LocalDate gregorian = toGregorian(this);
+        LocalDate updatedGregorian = gregorian.plus(Duration.ofDays(daysToAdd));
         return toJalali(updatedGregorian);
     }
 
