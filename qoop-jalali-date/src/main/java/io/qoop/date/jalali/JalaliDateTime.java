@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.*;
 import java.util.Objects;
 
-import static io.qoop.date.jalali.JalaliConverter.toGregorian;
 import static io.qoop.date.jalali.JalaliConverter.toJalali;
 
 /**
@@ -390,6 +389,37 @@ public class JalaliDateTime implements Serializable {
     //-----------------------------------------------------------------------
 
     /**
+     * Obtains an instance of {@code JalaliDateTime} from a localDateTime object.
+     *
+     * @param localDateTime the temporal object to convert, not null
+     * @return the jalali date time, not null
+     * @throws JalaliDateTimeException if unable to convert to a {@code LocalDateTime}
+     */
+    public static JalaliDateTime from(LocalDateTime localDateTime) {
+        LocalDate localDate = localDateTime.toLocalDate();
+        LocalTime localTime = localDateTime.toLocalTime();
+
+        JalaliDate jalaliDate = JalaliDate.from(localDate);
+
+        return with(jalaliDate, localTime);
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Obtains an instance of {@code LocalDateTime}.
+     *
+     * @return the local date time, not null
+     * @throws JalaliDateTimeException if unable to convert to a {@code JalaliDateTime}
+     */
+    public LocalDateTime toLocalDateTime() {
+        LocalDate localDate = date.toLocalDate();
+        return LocalDateTime.of(localDate, time);
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
      * Outputs this date-time as a {@code String}, such as {@code 1404/12/26 10:52:30}.
      * <p>
      * The output will be one of the following JalaliDate formats:
@@ -417,13 +447,5 @@ public class JalaliDateTime implements Serializable {
         JalaliDate jalaliDate = toJalali(newLocalDateTime.toLocalDate());
         LocalTime localTime = newLocalDateTime.toLocalTime();
         return with(jalaliDate, localTime);
-    }
-
-    //-----------------------------------------------------------------------
-
-    //TODO : Desc ...
-    private LocalDateTime toLocalDateTime() {
-        LocalDate gregorian = toGregorian(date);
-        return LocalDateTime.of(gregorian, time);
     }
 }

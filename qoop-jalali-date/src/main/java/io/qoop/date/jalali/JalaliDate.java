@@ -287,6 +287,31 @@ public class JalaliDate implements Serializable {
     //-----------------------------------------------------------------------
 
     /**
+     * Obtains an instance of {@code JalaliDate} from a localDate object.
+     *
+     * @param localDate the temporal object to convert, not null
+     * @return the jalali date, not null
+     * @throws JalaliDateTimeException if unable to convert to a {@code LocalDate}
+     */
+    public static JalaliDate from(LocalDate localDate) {
+        return toJalali(localDate);
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Obtains an instance of {@code LocalDate}.
+     *
+     * @return the local date, not null
+     * @throws JalaliDateTimeException if unable to convert to a {@code JalaliDate}
+     */
+    public LocalDate toLocalDate() {
+        return toGregorian(this);
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
      * Outputs this JalaliDate as a {@code String}, such as {@code 1404/12/25}.
      * <p>
      * The output will be in the JalaliDate format {@code yyyy/MM/dd}.
