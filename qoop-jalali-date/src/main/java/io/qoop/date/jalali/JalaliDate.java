@@ -1,7 +1,6 @@
 package io.qoop.date.jalali;
 
 import java.io.Serializable;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -9,24 +8,48 @@ import static io.qoop.date.jalali.JalaliConverter.*;
 import static io.qoop.date.jalali.JalaliExceptionCode.*;
 
 /**
+ * A date in the Jalali (Persian) calendar system, such as {@code 1404/12/25}.
+ * <p>
+ * This class represents a date without a time-zone in the Jalali calendar system,
+ * such as {@code 1404/12/25}.
+ * <p>
+ * The Jalali calendar system has several differences from the Gregorian calendar:
+ * <ul>
+ *   <li>The year is roughly 621 years behind the Gregorian year.</li>
+ *   <li>The year starts at the vernal equinox (Nowruz).</li>
+ *   <li>The months have a variable number of days, with the first six months having 31 days,
+ *   the next five having 30 days, and the last month having 29 or 30 days depending on leap years.</li>
+ * </ul>
+ * <p>
+ * This class is immutable and thread-safe.
+ * <p>
+ * <b>Example:</b>
+ * <pre>
+ * JalaliDate now = JalaliDate.now();
+ * JalaliDate date = JalaliDate.of(1403,  1,  1);
+ * String str = date.toString(); // "1403/01/01"
+ * </pre>
+ *
  * @author Davood Akbari - 1404
  * daak1365@gmail.com
  * daak1365@yahoo.com
  * 09125188694
+ * <p>
+ * * @implSpec This is an immutable and thread-safe enum.
+ * * @since 0.0.1
  */
-
 public class JalaliDate implements Serializable {
     /**
      * The minimum supported {@code JalaliDate}, '1/01/01'.
      * This could be used by an application as a "far past" date.
      */
-    public static final JalaliDate MIN = JalaliDate.of(1L, (short) 1, (short) 1);
+    public static final JalaliDate MIN = JalaliDate.of(1L, 1, 1);
 
     /**
      * The maximum supported {@code LocalDate}, 'Long.MAX_VALUE/12/29'.
      * This could be used by an application as a "far future" date.
      */
-    public static final JalaliDate MAX = JalaliDate.of(Long.MAX_VALUE, (short) 12, (short) 29);
+    public static final JalaliDate MAX = JalaliDate.of(Long.MAX_VALUE, 12, 29);
 
     /**
      * The year.
@@ -81,8 +104,8 @@ public class JalaliDate implements Serializable {
      * @throws JalaliDateTimeException if the value of any field is out of range,
      *                                 or if the day-of-month is invalid for the month-year
      */
-    public static JalaliDate of(long year, short month, short dayOfMonth) {
-        return create(year, month, dayOfMonth);
+    public static JalaliDate of(long year, int month, int dayOfMonth) {
+        return create(year, (short) month, (short) dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -101,13 +124,13 @@ public class JalaliDate implements Serializable {
         if (year <= 0) {
             throw JalaliDateTimeException.of(INVALID_PERSIAN_YEAR);
         } else if ((month > 12) || (month < 1)) {
-            throw JalaliDateTimeException.of(INVALID_PERSIAN_MONTH_NUMBER);
+            throw JalaliDateTimeException.withParams(INVALID_PERSIAN_MONTH_NUMBER);
         } else {
             JalaliMonth jalaliMonth = JalaliMonth.of(month);
             short length = jalaliMonth.length(isLeapYear(year));
 
             if ((dayOfMonth < 1) || (dayOfMonth > length)) {
-                throw JalaliDateTimeException.of(INVALID_PERSIAN_DAY_RANGE, length);
+                throw JalaliDateTimeException.withParams(INVALID_PERSIAN_DAY_RANGE, length);
             }
         }
 
@@ -280,8 +303,48 @@ public class JalaliDate implements Serializable {
         }
 
         LocalDate gregorian = toGregorian(this);
-        LocalDate updatedGregorian = gregorian.plus(Duration.ofDays(daysToAdd));
+        LocalDate updatedGregorian = gregorian.plusDays(daysToAdd);
         return toJalali(updatedGregorian);
+    }
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * Returns a copy of this {@code JalaliDate} with the specified number of years subtracted.
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param yearsToSubtract the years to subtract, may be negative
+     * @return a {@code JalaliDate} based on this date with the years subtracted, not null
+     * @throws JalaliDateTimeException if the result exceeds the supported date range
+     */
+    public JalaliDate minusYears(long yearsToSubtract) {
+        return plusYears(-yearsToSubtract);
+    }
+    //-----------------------------------------------------------------------
+
+    /**
+     * Returns a copy of this {@code JalaliDate} with the specified number of months subtracted.
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthsToSubtract the months to subtract, may be negative
+     * @return a {@code JalaliDate} based on this date with the months subtracted, not null
+     * @throws JalaliDateTimeException if the result exceeds the supported date range
+     */
+    public JalaliDate minusMonths(int monthsToSubtract) {
+        return plusMonths(-monthsToSubtract);
+    }
+    //-----------------------------------------------------------------------
+
+    /**
+     * Returns a copy of this {@code JalaliDate} with the specified number of days subtracted.
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param daysToSubtract the days to subtract, may be negative
+     * @return a {@code JalaliDate} based on this date with the days subtracted, not null
+     * @throws JalaliDateTimeException if the result exceeds the supported date range
+     */
+    public JalaliDate minusDays(long daysToSubtract) {
+        return plusDays(-daysToSubtract);
     }
 
     //-----------------------------------------------------------------------
@@ -327,11 +390,20 @@ public class JalaliDate implements Serializable {
 
     //-----------------------------------------------------------------------
 
-    //TODO : Desc ...
-    private String to2Digits(String str) {
-        if (str.length() < 2) {
-            str = '0' + str;
+    /**
+     * Ensures the input string represents a two-digit number by prefixing it with a zero
+     * if its length is less than 2.
+     * <p>
+     * If the length of the input string is 1, a '0' is added to the beginning.
+     * Otherwise, the string is returned unchanged.
+     *
+     * @param stringNum the string representation of the number, not null
+     * @return the formatted string with at least two digits, not null
+     */
+    private String to2Digits(String stringNum) {
+        if (stringNum.length() < 2) {
+            stringNum = '0' + stringNum;
         }
-        return str;
+        return stringNum;
     }
 }

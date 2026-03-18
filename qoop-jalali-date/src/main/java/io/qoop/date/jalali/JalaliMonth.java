@@ -20,6 +20,12 @@ import static io.qoop.date.jalali.JalaliExceptionCode.INVALID_VALUE_MONTH_OF_YEA
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
  * concept defined exactly equivalent to the JalaliDate calendar system.
+ * <p>
+ * * @author Davood Akbari - 1404
+ * * daak1365@gmail.com
+ * * daak1365@yahoo.com
+ * * 09125188694
+ * * <p>
  *
  * @implSpec This is an immutable and thread-safe enum.
  * @since 0.0.1
@@ -118,7 +124,7 @@ public enum JalaliMonth {
      */
     public static JalaliMonth of(int month) {
         if (month < 1 || month > 12) {
-            throw JalaliDateTimeException.of(INVALID_VALUE_MONTH_OF_YEAR, month);
+            throw JalaliDateTimeException.withParams(INVALID_VALUE_MONTH_OF_YEAR, month);
         }
 
         return ENUMS[month - 1];

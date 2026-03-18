@@ -7,7 +7,7 @@ public class JalaliDateTimeException extends DomainException {
         super(code, 400, params);
     }
 
-    public static JalaliDateTimeException of(String code, Object... params) {
+    public static JalaliDateTimeException withParams(String code, Object... params) {
         return new JalaliDateTimeException(code, params);
     }
 }

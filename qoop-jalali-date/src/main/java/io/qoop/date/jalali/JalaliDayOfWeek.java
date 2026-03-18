@@ -19,7 +19,13 @@ import static io.qoop.date.jalali.JalaliExceptionCode.INVALID_VALUE_DAYOFWEEK;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the day-of-week
  * concept defined exactly equivalent to the ISO calendar system.
+ * <p>
  *
+ * @author Davood Akbari - 1404
+ * daak1365@gmail.com
+ * daak1365@yahoo.com
+ * 09125188694
+ * <p>
  * @implSpec This is an immutable and thread-safe enum.
  * @since 0.0.1
  */
@@ -35,31 +41,31 @@ public enum JalaliDayOfWeek {
      * The singleton instance for the day-of-week of Yekshanbeh.
      * This has the numeric value of {@code 1}.
      */
-    YEKSHANBEH("یکشنبه"),
+    YEK_SHANBEH("یکشنبه"),
 
     /**
      * The singleton instance for the day-of-week of Doshanbeh.
      * This has the numeric value of {@code 2}.
      */
-    DOSHANBEH("دوشنبه"),
+    DO_SHANBEH("دوشنبه"),
 
     /**
      * The singleton instance for the day-of-week of SeShanbeh.
      * This has the numeric value of {@code 3}.
      */
-    SESHANBEH("سه شنبه"),
+    SES_SHANBEH("سه شنبه"),
 
     /**
      * The singleton instance for the day-of-week of Chaharshanbeh.
      * This has the numeric value of {@code 4}.
      */
-    CHAHARSHANBEH("چهارشنبه"),
+    CHAHAR_SHANBEH("چهارشنبه"),
 
     /**
      * The singleton instance for the day-of-week of PanjShanbe.
      * This has the numeric value of {@code 5}.
      */
-    PANJSHANBE("پنج شنبه"),
+    PANJ_SHANBEH("پنج شنبه"),
 
     /**
      * The singleton instance for the day-of-week of Jome.
@@ -101,9 +107,9 @@ public enum JalaliDayOfWeek {
      * @return the day-of-week singleton, not null
      * @throws JalaliDateTimeException if the day-of-week is invalid
      */
-    public static JalaliDayOfWeek of(short dayOfWeek) {
+    public static JalaliDayOfWeek of(int dayOfWeek) {
         if (dayOfWeek < 0 || dayOfWeek > 6) {
-            throw JalaliDateTimeException.of(INVALID_VALUE_DAYOFWEEK, dayOfWeek);
+            throw JalaliDateTimeException.withParams(INVALID_VALUE_DAYOFWEEK, dayOfWeek);
         }
         return ENUMS[dayOfWeek];
     }
