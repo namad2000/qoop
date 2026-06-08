@@ -1,11 +1,11 @@
 package io.qoop.doc.configuration;
 
+import io.qoop.properties.factory.YamlPropertySourceFactory;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
-import io.qoop.properties.factory.YamlPropertySourceFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class ApiDocConfiguration {
                 .info(new Info().title(title).version(version).description(description))
                 .addServersItem(new Server().url(serverUrl).description("Base Path"))
 
-                // تعریف نوع احراز هویت (JWT Bearer)
+                // Definition of JWT Bearer authentication method.
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(
                         new io.swagger.v3.oas.models.Components()
