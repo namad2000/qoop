@@ -34,7 +34,7 @@
 
         <!-- External dependencies -->
         <java.version>21</java.version>
-        <spring-cloud.version>2025.1.0</spring-cloud.version>
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
         <springdoc-openapi-starter-webmvc-ui.version>3.0.0</springdoc-openapi-starter-webmvc-ui.version>
         <spring-boot-starter-aop.version>4.0.0-M2</spring-boot-starter-aop.version>
         <logback-gelf.version>6.1.2</logback-gelf.version>
