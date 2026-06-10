@@ -1,6 +1,6 @@
 package io.qoop.feign;
 
-import io.qoop.feign.config.QoopFeignAutoConfiguration;
+import io.qoop.feign.config.QoopFeignConfiguration;
 import io.qoop.logs.LogKeys;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ContextConfiguration(classes = {
         CorrelationInterceptor.class,
-        QoopFeignAutoConfiguration.class,
+        QoopFeignConfiguration.class,
         FeignAutoConfiguration.class
 })
 @EnableFeignClients("io.qoop.feign")

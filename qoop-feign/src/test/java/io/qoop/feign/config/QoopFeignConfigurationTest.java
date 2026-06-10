@@ -7,12 +7,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class QoopFeignAutoConfigurationTest {
+class QoopFeignConfigurationTest {
 
     @Test
     void should_register_beans_correctly() {
         AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext(QoopFeignAutoConfiguration.class);
+                new AnnotationConfigApplicationContext(QoopFeignConfiguration.class);
 
         ErrorDecoder errorDecoder = context.getBean(ErrorDecoder.class);
 

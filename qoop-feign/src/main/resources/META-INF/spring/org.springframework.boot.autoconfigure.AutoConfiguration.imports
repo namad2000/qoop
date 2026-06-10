@@ -1,2 +1,2 @@
-io.qoop.feign.config.QoopFeignAutoConfiguration
+io.qoop.feign.config.QoopFeignConfiguration
 io.qoop.feign.CorrelationInterceptor
