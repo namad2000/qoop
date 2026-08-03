@@ -14,5 +14,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public abstract class ActiveAuditingEntity extends AuditingEntity {
     @Column(name = "is_active")
-    private Boolean active;
+    private boolean activated;
 }

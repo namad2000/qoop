@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public abstract class DeleteAuditingEntity extends AuditingEntity {
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
-    private Boolean isDeleted = false;
+    private boolean deleted = false;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
@@ -24,13 +24,13 @@ public abstract class DeleteAuditingEntity extends AuditingEntity {
     private String deletedBy;
 
     public void softDelete(String deletedBy) {
-        this.isDeleted = true;
+        this.deleted = true;
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = deletedBy;
     }
 
     public void restore() {
-        this.isDeleted = false;
+        this.deleted = false;
         this.deletedAt = null;
         this.deletedBy = null;
     }
