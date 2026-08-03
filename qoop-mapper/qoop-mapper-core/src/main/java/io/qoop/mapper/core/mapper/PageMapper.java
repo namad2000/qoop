@@ -10,35 +10,35 @@ import org.springframework.data.domain.Pageable;
 public interface PageMapper<S, T> extends BasicMapper<S, T> {
 
     // Converts Page (Target) to PageFilterData (Source)
-    default PageFilterData<T> toPageFilterData(Page<S> page) {
+    default PageFilterData<S> toPageFilterData(Page<T> page) {
         return PageFilterData.of(
                 page.getTotalElements(),
-                toTarget(page.getContent())
+                toSource(page.getContent())
         );
     }
 
     // Converts Page (Source) to PageData (Target)
-    default PageData<T> toPageData(Page<S> page) {
+    default PageData<S> toPageData(Page<T> page) {
         return PageData.of(
                 page.getTotalElements(),
                 page.getTotalPages(),
-                toTarget(page.getContent())
+                toSource(page.getContent())
         );
     }
 
     // Converts PageFilterData (Source) to Page (Target)
-    default Page<S> toPage(PageFilterData<T> pageFilterData) {
+    default Page<T> toPage(PageFilterData<S> pageFilterData) {
         return new PageImpl<>(
-                toSource(pageFilterData.getList()),
+                toTarget(pageFilterData.getList()),
                 Pageable.unpaged(),
                 pageFilterData.getTotal()
         );
     }
 
     // Converts PageData (Target) to Page (Source)
-    default Page<S> toPage(PageData<T> pageData) {
+    default Page<T> toPage(PageData<S> pageData) {
         return new PageImpl<>(
-                toSource(pageData.getContents()),
+                toTarget(pageData.getContents()),
                 Pageable.unpaged(),
                 pageData.getTotalElements()
         );

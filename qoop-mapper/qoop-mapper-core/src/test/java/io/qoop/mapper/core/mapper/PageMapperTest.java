@@ -18,11 +18,11 @@ class PageMapperTest {
     // --- 1. Mock Implementation for Testing ---
     // Scenario: Mapping between a Command (Source) and a Domain Entity (Target)
     @Getter
-    static class CreateUserCommand {
+    static class UserEntity {
         private final String username;
         private final String email;
 
-        public CreateUserCommand(String username, String email) {
+        public UserEntity(String username, String email) {
             this.username = username;
             this.email = email;
         }
@@ -53,15 +53,15 @@ class PageMapperTest {
     }
 
     // The Mapper Implementation
-    static class CommandToUserMapper implements PageMapper<CreateUserCommand, User> {
+    static class CommandToUserMapper implements PageMapper<User, UserEntity> {
         @Override
-        public User toTarget(CreateUserCommand source) {
+        public User toSource(UserEntity source) {
             return new User(source.getUsername(), source.getEmail());
         }
 
         @Override
-        public CreateUserCommand toSource(User target) {
-            return new CreateUserCommand(target.getName(), target.getContact());
+        public UserEntity toTarget(User target) {
+            return new UserEntity(target.getName(), target.getContact());
         }
     }
 
@@ -70,12 +70,12 @@ class PageMapperTest {
     @Test
     void testToPage_whenPageFilterDataIsProvided_shouldReturnPage() {
         // Arrange
-        PageMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        PageMapper<User, UserEntity> mapper = new CommandToUserMapper();
         List<User> userList = List.of(new User("Hamed", "hamed@test.com"));
         PageFilterData<User> pageData = PageFilterData.of(20L, userList);
 
         // Act
-        Page<CreateUserCommand> result = mapper.toPage(pageData);
+        Page<UserEntity> result = mapper.toPage(pageData);
 
         // Assert
         assertNotNull(result);
@@ -88,12 +88,12 @@ class PageMapperTest {
     @Test
     void testToPageFilterData_whenPageIsProvided_shouldReturnPageFilterData() {
         // Arrange
-        PageMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
-        List<CreateUserCommand> commandList = List.of(
-                new CreateUserCommand("Ali", "ali@test.com"),
-                new CreateUserCommand("Reza", "reza@test.com")
+        PageMapper<User, UserEntity> mapper = new CommandToUserMapper();
+        List<UserEntity> commandList = List.of(
+                new UserEntity("Ali", "ali@test.com"),
+                new UserEntity("Reza", "reza@test.com")
         );
-        Page<CreateUserCommand> page = new PageImpl<>(commandList, Pageable.unpaged(), 50L);
+        Page<UserEntity> page = new PageImpl<>(commandList, Pageable.unpaged(), 50L);
 
         // Act
         PageFilterData<User> result = mapper.toPageFilterData(page);
@@ -109,9 +109,9 @@ class PageMapperTest {
     @Test
     void testToPageData_whenPageIsProvided_shouldReturnPageData() {
         // Arrange
-        PageMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
-        List<CreateUserCommand> commandList = List.of(new CreateUserCommand("Sara", "sara@test.com"));
-        Page<CreateUserCommand> page = new PageImpl<>(commandList, Pageable.unpaged(), 10L);
+        PageMapper<User, UserEntity> mapper = new CommandToUserMapper();
+        List<UserEntity> commandList = List.of(new UserEntity("Sara", "sara@test.com"));
+        Page<UserEntity> page = new PageImpl<>(commandList, Pageable.unpaged(), 10L);
 
         // Act
         PageData<User> result = mapper.toPageData(page);
@@ -127,12 +127,12 @@ class PageMapperTest {
     @Test
     void testToPage_whenPageDataIsProvided_shouldReturnPage() {
         // Arrange
-        PageMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        PageMapper<User, UserEntity> mapper = new CommandToUserMapper();
         List<User> userList = List.of(new User("Hamed", "hamed@test.com"));
         PageData<User> pageData = PageData.of(20L, 2, userList);
 
         // Act
-        Page<CreateUserCommand> result = mapper.toPage(pageData);
+        Page<UserEntity> result = mapper.toPage(pageData);
 
         // Assert
         assertNotNull(result);
