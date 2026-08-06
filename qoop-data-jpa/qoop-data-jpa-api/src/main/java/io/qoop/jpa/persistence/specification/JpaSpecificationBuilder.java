@@ -43,8 +43,8 @@ public interface JpaSpecificationBuilder<T, ID> extends JpaSpecificationExecutor
                     switch (filter.getOperator()) {
                         case EQUAL, _EQUAL -> handleEqualOperator(cb, path, fieldClass, filter.getValue(), predicates);
                         case NOT_EQUAL -> handleNotEqualOperator(cb, path, fieldClass, filter.getValue(), predicates);
-                        case IN -> predicates.add(path.in(filter.getValue().split(",")));
-                        case NOT_IN -> predicates.add(path.in(filter.getValue().split(",")).not());
+                        case IN -> predicates.add(path.in((Object) filter.getValue().split(",")));
+                        case NOT_IN -> predicates.add(path.in((Object) filter.getValue().split(",")).not());
                         case LIKE ->
                                 predicates.add(cb.like(path.as(String.class), "%" + filter.getValue().replace("*", "") + "%"));
                         case BETWEEN -> handleBetweenOperator(cb, path, filter.getValue(), predicates);
