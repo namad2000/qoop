@@ -18,8 +18,25 @@ public class DomainValidationException extends DomainException {
         this.paramName = paramName;
     }
 
+    protected DomainValidationException(String code, int httpStatus, String paramName, Object... params) {
+        super(code, httpStatus, params);
+        this.paramName = paramName;
+    }
+
+    public static DomainValidationException of(String code) {
+        return new DomainValidationException(code, null, (Object) null);
+    }
+
     public static DomainValidationException of(String code, String paramName) {
         return new DomainValidationException(code, paramName);
+    }
+
+    public static DomainValidationException of(String code, int httpStatus) {
+        return new DomainValidationException(code, httpStatus, null, (Object) null);
+    }
+
+    public static DomainValidationException withParams(String code, Object... params) {
+        return new DomainValidationException(code, null, params);
     }
 
     public static DomainValidationException withParams(String code, String paramName, Object... params) {
