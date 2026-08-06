@@ -6,11 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 /**
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/7/2025 4:59 PM
- * Package: io.qoop.infrastructure.model
  */
 
 @Getter
@@ -18,7 +19,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class UpdateModel<ID> extends IDModel<ID> {
-
+public class UpdateModel<ID> extends CreatedModel<ID> {
+    protected ID id;
+    protected LocalDateTime updatedAt;
+    protected String updatedBy;
     protected Integer version;
 }

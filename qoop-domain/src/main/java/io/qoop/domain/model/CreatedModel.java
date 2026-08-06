@@ -5,18 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 /**
  * Author: davood akbari
  * Email: daak1365@gmail.com
  * Created: 12/7/2025 4:59 PM
- * Package: io.qoop.infrastructure.model
  */
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class IDModel<ID> {
-
-    protected ID id;
+public class CreatedModel<ID> {
+    private LocalDateTime createdAt;
+    private String createdBy;
 }

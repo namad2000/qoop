@@ -12,5 +12,5 @@ import lombok.experimental.SuperBuilder;
 public class DeleteModel<ID> extends ActiveModel<ID> {
 
     @Builder.Default
-    protected Boolean isDeleted = false;
+    protected Boolean deleted = false;
 }
