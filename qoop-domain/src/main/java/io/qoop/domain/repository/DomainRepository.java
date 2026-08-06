@@ -1,7 +1,5 @@
 package io.qoop.domain.repository;
 
-import java.util.Optional;
-
 /**
  * Author: davood akbari
  * Email: daak1365@gmail.com
@@ -9,12 +7,9 @@ import java.util.Optional;
  * Package: io.qoop.domain.repository
  */
 
-public interface DomainRepository<D, ID> {
-    D save(D domain);
-
-    Optional<D> findById(ID id);
-
-    Boolean existById(ID id);
-
-    void delete(D domain);
+public interface DomainRepository<D, ID> extends
+        CrudRepository<D, ID>,
+        ListCrudRepository<D, ID>,
+        SaveAndFlushRepository<D, ID>,
+        BatchDeleteRepository<D, ID> {
 }

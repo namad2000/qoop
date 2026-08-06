@@ -1,6 +1,6 @@
 package io.qoop.domain.repository;
 
-import io.qoop.domain.model.PageData;
+import java.util.List;
 
 /**
  * Author: davood akbari
@@ -9,7 +9,10 @@ import io.qoop.domain.model.PageData;
  * Package: io.qoop.domain.repository
  */
 
-public interface DomainPagingRepository<D> {
+public interface SaveAndFlushRepository<D, ID> {
+    void flush();
 
-    PageData<D> findAll(Integer pageNumber, Integer pageSize);
+    D saveAndFlush(D domain);
+
+    List<D> saveAllAndFlush(Iterable<D> domains);
 }

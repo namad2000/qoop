@@ -7,6 +7,6 @@ package io.qoop.domain.repository;
  * Package: io.qoop.domain.repository
  */
 
-public interface DomainSoftDeleteRepository<D> {
-    void delete(D domain, boolean logical);
+public interface SaveRepository<D, ID> {
+    D save(D domain);
 }

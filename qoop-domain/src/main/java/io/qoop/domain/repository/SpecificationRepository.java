@@ -11,8 +11,7 @@ import io.qoop.domain.model.PageFilterData;
  * Package: io.qoop.domain.repository
  */
 
-public interface DomainFilterRepository<D> {
-
+public interface SpecificationRepository<D> {
     PageFilterData<D> findAll(FilterWrapper filterWrapper,
                               SortWrapper sortWrapper,
                               Integer start,
