@@ -17,5 +17,5 @@ import lombok.experimental.SuperBuilder;
 public class ActiveCmd<ID> extends UpdateCmd<ID> {
 
     @Builder.Default
-    protected Boolean active = true;
+    protected boolean active = true;
 }

@@ -18,5 +18,5 @@ import lombok.experimental.SuperBuilder;
 public class ActiveModel<ID> extends UpdateModel<ID> {
 
     @Builder.Default
-    protected Boolean active = true;
+    protected boolean active = true;
 }
