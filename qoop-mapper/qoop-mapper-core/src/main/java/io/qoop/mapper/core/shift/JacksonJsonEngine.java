@@ -32,4 +32,12 @@ public class JacksonJsonEngine implements JsonEngine {
     public byte[] serialize(Object obj) {
         return mapper.writeValueAsBytes(obj);
     }
+
+    @Override
+    public <T> T convert(Object fromValue, Class<T> toValueType) {
+        if (fromValue == null || toValueType == null) {
+            return null;
+        }
+        return mapper.convertValue(fromValue, toValueType);
+    }
 }

@@ -7,4 +7,6 @@ public interface JsonEngine {
     <T> T deserialize(byte[] data, Class<T> tClass);
 
     byte[] serialize(Object obj);
+
+    <T> T convert(Object fromValue, Class<T> toValueType);
 }
