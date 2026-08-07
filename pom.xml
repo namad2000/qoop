@@ -40,5 +40,6 @@
         <module>qoop-parent</module>
         <module>qoop-feign</module>
         <module>qoop-filter-wrapper</module>
+        <module>qoop-global-config</module>
     </modules>
 </project>

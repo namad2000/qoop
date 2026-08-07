@@ -31,6 +31,7 @@
         <qoop-gateway-open-api-doc.version>0.0.1-SNAPSHOT</qoop-gateway-open-api-doc.version>
         <qoop-feign.version>0.0.1-SNAPSHOT</qoop-feign.version>
         <qoop-filter-wrapper.version>0.0.1-SNAPSHOT</qoop-filter-wrapper.version>
+        <qoop-global-config.version>0.0.1-SNAPSHOT</qoop-global-config.version>
 
         <!-- External dependencies -->
         <java.version>21</java.version>
@@ -332,6 +333,12 @@
                 <groupId>io.qoop</groupId>
                 <artifactId>qoop-filter-wrapper-core</artifactId>
                 <version>${qoop-filter-wrapper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-global-config</artifactId>
+                <version>${qoop-global-config.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
