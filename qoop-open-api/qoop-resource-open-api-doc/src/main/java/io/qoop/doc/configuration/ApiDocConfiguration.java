@@ -1,6 +1,7 @@
 package io.qoop.doc.configuration;
 
 import io.qoop.properties.factory.YamlPropertySourceFactory;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -44,7 +45,7 @@ public class ApiDocConfiguration {
                 // Definition of JWT Bearer authentication method.
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(
-                        new io.swagger.v3.oas.models.Components()
+                        new Components()
                                 .addSecuritySchemes(
                                         securitySchemeName,
                                         new SecurityScheme()
@@ -55,6 +56,22 @@ public class ApiDocConfiguration {
                                                 .in(SecurityScheme.In.HEADER)
                                                 .description("Enter JWT token starting with 'Bearer '")));
     }
+
+//    @Bean
+//    public OperationCustomizer addAcceptLanguageHeader() {
+//        return (operation, handlerMethod) -> {
+//            operation.addParametersItem(
+//                    new HeaderParameter()
+//                            .name("Accept-Language")
+//                            .description("Language preference for response messages")
+//                            .required(false)
+//                            .schema(new StringSchema()._default("fa-IR"))
+//                            .example("fa-IR")
+//            );
+//
+//            return operation;
+//        };
+//}
 
 //    @Bean
 //    public ParameterCustomizer hideCurrentUserParam() {

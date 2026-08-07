@@ -41,5 +41,6 @@
         <module>qoop-feign</module>
         <module>qoop-filter-wrapper</module>
         <module>qoop-global-config</module>
+        <module>qoop-e2e-test</module>
     </modules>
 </project>

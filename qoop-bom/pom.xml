@@ -32,6 +32,7 @@
         <qoop-feign.version>0.0.1-SNAPSHOT</qoop-feign.version>
         <qoop-filter-wrapper.version>0.0.1-SNAPSHOT</qoop-filter-wrapper.version>
         <qoop-global-config.version>0.0.1-SNAPSHOT</qoop-global-config.version>
+        <qoop-e2e-test.version>0.0.1-SNAPSHOT</qoop-e2e-test.version>
 
         <!-- External dependencies -->
         <java.version>21</java.version>
@@ -339,6 +340,12 @@
                 <groupId>io.qoop</groupId>
                 <artifactId>qoop-global-config</artifactId>
                 <version>${qoop-global-config.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-e2e-test</artifactId>
+                <version>${qoop-e2e-test.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
