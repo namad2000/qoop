@@ -10,7 +10,7 @@ public class NotNullValidator implements AnnotationValidator<Object, NotNull> {
     @Override
     public void validate(Object value, NotNull notNull, String paramName) {
         if (value == null) {
-            throw DomainValidationException.of(NOT_NULL, paramName);
+            throw DomainValidationException.withParams(NOT_NULL, paramName, paramName);
         }
     }
 }

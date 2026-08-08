@@ -16,7 +16,7 @@ public class MaxValidator implements AnnotationValidator<Number, Max> {
     @Override
     public void validate(Number value, Max max, String paramName) {
         if (value != null && value.longValue() > max.value()) {
-            throw DomainValidationException.withParams(VALUE_CANNOT_BE_GREATER_THAN, paramName, max.value());
+            throw DomainValidationException.withParams(VALUE_CANNOT_BE_GREATER_THAN, paramName, paramName, max.value());
         }
     }
 }

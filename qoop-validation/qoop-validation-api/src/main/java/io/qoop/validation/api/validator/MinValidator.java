@@ -11,7 +11,7 @@ public class MinValidator implements AnnotationValidator<Number, Min> {
     @Override
     public void validate(Number value, Min min, String paramName) {
         if (value != null && value.longValue() < min.value()) {
-            throw DomainValidationException.withParams(VALUE_CANNOT_BE_LESS_THAN, paramName, min.value());
+            throw DomainValidationException.withParams(VALUE_CANNOT_BE_LESS_THAN, paramName, paramName, min.value());
         }
     }
 }

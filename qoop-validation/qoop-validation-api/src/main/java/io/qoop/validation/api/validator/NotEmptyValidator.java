@@ -10,7 +10,7 @@ public class NotEmptyValidator implements AnnotationValidator<String, NotEmpty> 
     @Override
     public void validate(String value, NotEmpty NotEmpty, String paramName) {
         if (value == null || value.trim().isEmpty()) {
-            throw DomainValidationException.of(NOT_EMPTY, paramName);
+            throw DomainValidationException.withParams(NOT_EMPTY, paramName, paramName);
         }
     }
 }

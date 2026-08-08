@@ -1,3 +1,4 @@
 spring:
   web:
     locale: '${message.locale:fa_IR}'
+    locale-resolver: accept-header

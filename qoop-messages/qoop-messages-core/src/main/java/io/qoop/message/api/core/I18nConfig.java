@@ -31,7 +31,7 @@ public class I18nConfig {
     public MessageSource messagesMessageSource() throws IOException {
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
 
-        String[] basenames = resolveBaseNames("classpath*:i18n/messages/messages*.properties");
+        String[] basenames = resolveBaseNames("classpath*:i18n/messages/*messages*.properties");
         ms.setBasenames(basenames);
 
         ms.setDefaultEncoding("UTF-8");
@@ -45,7 +45,7 @@ public class I18nConfig {
     public MessageSource fieldsMessageSource() throws IOException {
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
 
-        String[] basenames = resolveBaseNames("classpath*:i18n/fields/fields*.properties");
+        String[] basenames = resolveBaseNames("classpath*:i18n/fields/*fields*.properties");
         ms.setBasenames(basenames);
 
         ms.setDefaultEncoding("UTF-8");

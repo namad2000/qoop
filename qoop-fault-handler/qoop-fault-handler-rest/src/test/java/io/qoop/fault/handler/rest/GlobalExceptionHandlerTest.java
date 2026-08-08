@@ -136,7 +136,7 @@ public class GlobalExceptionHandlerTest {
 
         mockMvc.perform(get("/test/business-exception")
                         .header("Accept-Language", "fa"))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isUnprocessableContent())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.code").value("business.logic.error"))
                 .andExpect(jsonPath("$.message").value("Insufficient funds in AccountBalance"));
