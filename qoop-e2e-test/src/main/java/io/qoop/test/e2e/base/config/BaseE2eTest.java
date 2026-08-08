@@ -7,6 +7,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -21,6 +22,9 @@ import org.springframework.test.context.ActiveProfiles;
 @WireMockTest(httpPort = 666) // WireMock runs on port 666
 public abstract class BaseE2eTest {
 
+    @Value("${hub.baseUrl:http://localhost}")
+    String baseUrl;
+
     @LocalServerPort
     protected int port;
 
@@ -31,10 +35,10 @@ public abstract class BaseE2eTest {
     @BeforeEach
     void setup() {
         RestAssured.port = port;
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = baseUrl;
 
         this.requestSpec = new RequestSpecBuilder()
-                .setBaseUri("http://localhost")
+                .setBaseUri(baseUrl)
                 .setPort(port)
                 .addHeader("Authorization", "Bearer " + getToken())
                 .setContentType(ContentType.JSON)
