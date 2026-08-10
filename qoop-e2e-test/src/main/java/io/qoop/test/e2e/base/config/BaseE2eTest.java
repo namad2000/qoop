@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @WireMockTest(httpPort = 666) // WireMock runs on port 666
+@EnabledOnTestProfile
 public abstract class BaseE2eTest {
 
     @Value("${hub.baseUrl:http://localhost}")
