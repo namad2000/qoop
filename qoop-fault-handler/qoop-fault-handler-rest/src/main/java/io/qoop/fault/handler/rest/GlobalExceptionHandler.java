@@ -34,6 +34,7 @@ public class GlobalExceptionHandler {
 
     private final MessageResolver messageResolver;
 
+
     // Handle MethodArgumentNotValidException (Hibernate Validator on @RequestBody)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
@@ -46,11 +47,15 @@ public class GlobalExceptionHandler {
                 FieldErrorDetail> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(fieldError -> new FieldErrorDetail(
-                        messageResolver.resolve(fieldError.getField(), locale),
-                        fieldError.getDefaultMessage(),
-                        messageResolver.resolve(fieldError.getDefaultMessage(), locale)
-                ))
+                .map(fieldError -> {
+                    String field = fieldError.getField();
+
+                    return new FieldErrorDetail(
+                            messageResolver.resolveField(field, locale),
+                            field,
+                            messageResolver.resolve(fieldError.getDefaultMessage(), locale)
+                    );
+                })
                 .toList();
 
         ErrorResponse response = ErrorResponse.builder()
@@ -76,11 +81,15 @@ public class GlobalExceptionHandler {
 
         List<FieldErrorDetail> fieldErrors = ex.getConstraintViolations()
                 .stream()
-                .map(violation -> new FieldErrorDetail(
-                        messageResolver.resolve(violation.getPropertyPath().toString(), locale),
-                        violation.getMessage(),
-                        messageResolver.resolve(violation.getMessage(), locale)
-                ))
+                .map(violation -> {
+                    String field = violation.getPropertyPath().toString();
+
+                    return new FieldErrorDetail(
+                            messageResolver.resolveField(field, locale),
+                            field,
+                            messageResolver.resolve(violation.getMessage(), locale)
+                    );
+                })
                 .toList();
 
         ErrorResponse response = ErrorResponse.builder()

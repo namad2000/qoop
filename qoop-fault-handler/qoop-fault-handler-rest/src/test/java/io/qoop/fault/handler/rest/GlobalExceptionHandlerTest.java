@@ -49,9 +49,9 @@ public class GlobalExceptionHandlerTest {
         when(resolver.resolve(eq("VALIDATION_FAILED"), any(Locale.class)))
                 .thenReturn("Validation failed for one or more fields");
 
-        // Mock field names resolution
-        when(resolver.resolve(eq("name"), any(Locale.class))).thenReturn("Name Field");
-        when(resolver.resolve(eq("age"), any(Locale.class))).thenReturn("Age Field");
+        // Mock field names resolution (code)
+        when(resolver.resolveField(eq("name"), any(Locale.class))).thenReturn("Name Field");
+        when(resolver.resolveField(eq("age"), any(Locale.class))).thenReturn("Age Field");
 
         // Mock constraint message resolution
         when(resolver.resolve(eq("Name cannot be blank"), any(Locale.class))).thenReturn("Name cannot be blank");
@@ -73,10 +73,12 @@ public class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
                 .andExpect(jsonPath("$.message").value("Validation failed for one or more fields"))
                 .andExpect(jsonPath("$.fieldErrors", hasSize(2)))
-                .andExpect(jsonPath("$.fieldErrors[?(@.field == 'Name Field')].code").value("Name cannot be blank"))
-                .andExpect(jsonPath("$.fieldErrors[?(@.field == 'Name Field')].message").value("Name cannot be blank"))
-                .andExpect(jsonPath("$.fieldErrors[?(@.field == 'Age Field')].code").value("Age must be at least 18"))
-                .andExpect(jsonPath("$.fieldErrors[?(@.field == 'Age Field')].message").value("Age must be at least 18"));
+                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'name')].field", org.hamcrest.Matchers.hasItem("Name Field")))
+                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'name')].message", org.hamcrest.Matchers.hasItem("Name cannot be blank")))
+                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'name')].code", org.hamcrest.Matchers.hasItem("name")))
+                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'age')].field", org.hamcrest.Matchers.hasItem("Age Field")))
+                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'age')].message", org.hamcrest.Matchers.hasItem("Age must be at least 18")))
+                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'age')].code", org.hamcrest.Matchers.hasItem("age")));
     }
 
     @Test
@@ -85,8 +87,8 @@ public class GlobalExceptionHandlerTest {
         when(resolver.resolve(eq("CONSTRAINT_VIOLATION"), any(Locale.class)))
                 .thenReturn("Constraint violation occurred");
 
-        // Mock property path and message resolution
-        when(resolver.resolve(eq("validateParam.count"), any(Locale.class))).thenReturn("Count Param");
+        // Mock property path resolution (code)
+        when(resolver.resolveField(eq("validateParam.count"), any(Locale.class))).thenReturn("Count Param");
         when(resolver.resolve(eq("Value must be at least 10"), any(Locale.class))).thenReturn("Value must be at least 10");
 
         mockMvc.perform(get("/test/param-validation")
@@ -98,7 +100,7 @@ public class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.message").value("Constraint violation occurred"))
                 .andExpect(jsonPath("$.fieldErrors", hasSize(1)))
                 .andExpect(jsonPath("$.fieldErrors[0].field").value("Count Param"))
-                .andExpect(jsonPath("$.fieldErrors[0].code").value("Value must be at least 10"))
+                .andExpect(jsonPath("$.fieldErrors[0].code").value("validateParam.count"))
                 .andExpect(jsonPath("$.fieldErrors[0].message").value("Value must be at least 10"));
     }
 

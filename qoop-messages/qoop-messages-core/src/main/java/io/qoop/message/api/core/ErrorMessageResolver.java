@@ -47,7 +47,7 @@ public class ErrorMessageResolver implements MessageResolver {
             // Try to translate the parameter as a field name using fields properties
             String translatedParam = param;
             try {
-                translatedParam = fieldsSource.getMessage(param, null, locale);
+                translatedParam = resolveField(param, locale);
             } catch (NoSuchMessageException ignored) {
                 // If no field translation is found, use the original parameter value
             }
@@ -59,5 +59,10 @@ public class ErrorMessageResolver implements MessageResolver {
         }
 
         return resolvedMessage;
+    }
+
+    @Override
+    public String resolveField(String field, Locale locale, Object... params) {
+        return fieldsSource.getMessage(field, null, locale);
     }
 }
