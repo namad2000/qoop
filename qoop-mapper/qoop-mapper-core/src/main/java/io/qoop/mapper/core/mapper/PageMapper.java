@@ -2,12 +2,12 @@ package io.qoop.mapper.core.mapper;
 
 import io.qoop.domain.model.PageData;
 import io.qoop.domain.model.PageFilterData;
-import io.qoop.mapper.api.mapper.BasicMapper;
+import io.qoop.mapper.api.mapper.SourceMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-public interface PageMapper<S, T> extends BasicMapper<S, T> {
+public interface PageMapper<S, T> extends SourceMapper<S, T> {
 
     // Converts Page (Target) to PageFilterData (Source)
     default PageFilterData<S> toPageFilterData(Page<T> page) {

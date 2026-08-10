@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface BasicMapper<S, T> extends TargetMapper<S, T> {
+public interface SourceMapper<S, T> extends TargetMapper<S, T> {
 
     // Converts a single Target object back to a Source object
     // Example: UserDto -> User, User -> CreateUserCommand

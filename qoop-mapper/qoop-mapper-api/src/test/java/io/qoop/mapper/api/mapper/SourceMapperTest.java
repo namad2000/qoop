@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BasicMapperTest {
+class SourceMapperTest {
 
     // --- 1. Mock Implementation for Testing ---
     // Scenario: Mapping between a Command (Source) and a Domain Entity (Target)
@@ -49,7 +49,7 @@ class BasicMapperTest {
     }
 
     // The Mapper Implementation
-    static class CommandToUserMapper implements BasicMapper<CreateUserCommand, User> {
+    static class CommandToUserMapper implements SourceMapper<CreateUserCommand, User> {
         @Override
         public User toTarget(CreateUserCommand source) {
             return new User(source.getUsername(), source.getEmail());
@@ -66,7 +66,7 @@ class BasicMapperTest {
     @Test
     void testToTarget_whenSourceIsProvided_shouldReturnTarget() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         CreateUserCommand command = new CreateUserCommand("Ali", "ali@example.com");
 
         // Act
@@ -81,7 +81,7 @@ class BasicMapperTest {
     @Test
     void testToSource_whenTargetIsProvided_shouldReturnSource() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         User user = new User("Reza", "reza@example.com");
 
         // Act
@@ -96,7 +96,7 @@ class BasicMapperTest {
     @Test
     void testToOptionalTarget_whenSourceIsPresent_shouldReturnMappedTarget() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<CreateUserCommand> optionalCommand = Optional.of(new CreateUserCommand("Sara", "sara@example.com"));
 
         // Act
@@ -110,7 +110,7 @@ class BasicMapperTest {
     @Test
     void testToOptionalTarget_whenOptionalSourceIsEmpty_shouldReturnEmpty() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<CreateUserCommand> optionalCommand = Optional.empty();
 
         // Act
@@ -123,7 +123,7 @@ class BasicMapperTest {
     @Test
     void testToOptionalSource_whenTargetIsPresent_shouldReturnMappedSource() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<User> optionalUser = Optional.of(new User("Mohammad", "mohammad@example.com"));
 
         // Act
@@ -137,7 +137,7 @@ class BasicMapperTest {
     @Test
     void testToOptionalSource_whenOptionalTargetIsEmpty_shouldReturnEmpty() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Optional<User> optionalUser = Optional.empty();
 
         // Act
@@ -150,7 +150,7 @@ class BasicMapperTest {
     @Test
     void testToTargetList_whenSourceListIsProvided_shouldReturnTarget() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         List<CreateUserCommand> commands = List.of(
                 new CreateUserCommand("User1", "user1@test.com"),
                 new CreateUserCommand("User2", "user2@test.com")
@@ -169,7 +169,7 @@ class BasicMapperTest {
     @Test
     void testToTargetList_whenSourceListIsEmpty_shouldReturnEmpty() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         List<CreateUserCommand> commands = List.of();
 
         // Act
@@ -183,7 +183,7 @@ class BasicMapperTest {
     @Test
     void testToSourceList_whenTargetListIsProvided_shouldReturnSource() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         List<User> users = List.of(
                 new User("Target1", "target1@test.com"),
                 new User("Target2", "target2@test.com")
@@ -202,7 +202,7 @@ class BasicMapperTest {
     @Test
     void testToTargetSet_whenSourceSetIsProvided_shouldReturnTargetSet() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Set<CreateUserCommand> commands = Set.of(
                 new CreateUserCommand("User1", "user1@test.com"),
                 new CreateUserCommand("User2", "user2@test.com")
@@ -221,7 +221,7 @@ class BasicMapperTest {
     @Test
     void testToTargetSet_whenSourceSetIsEmpty_shouldReturnEmptySet() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Set<CreateUserCommand> commands = Set.of();
 
         // Act
@@ -235,7 +235,7 @@ class BasicMapperTest {
     @Test
     void testToSourceSet_whenTargetSetIsProvided_shouldReturnSourceSet() {
         // Arrange
-        BasicMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
+        SourceMapper<CreateUserCommand, User> mapper = new CommandToUserMapper();
         Set<User> users = Set.of(
                 new User("Target1", "target1@test.com"),
                 new User("Target2", "target2@test.com")
