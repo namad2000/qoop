@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <pluginGroups>
+    </pluginGroups>
+
+    <proxies>
+    </proxies>
+
+    <!-- Authentication credentials for Nexus repository deployment -->
+    <servers>
+        <server>
+            <id>nexus-releases</id>
+            <username>YOUR_USERNAME</username>
+            <password>YOUR_PASSWORD</password>
+        </server>
+        <server>
+            <id>nexus-snapshots</id>
+            <username>YOUR_USERNAME</username>
+            <password>YOUR_PASSWORD</password>
+        </server>
+    </servers>
+
+    <mirrors>
+        <mirror>
+            <id>nexus</id>
+            <mirrorOf>*</mirrorOf>
+            <name>Tamin Nexus Repository</name>
+            <url>https://nexus.tamin.ir/repository/maven-public/</url>
+        </mirror>
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <id>allow-snapshots</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>snapshots-repo</id>
+                    <url>https://nexus.tamin.ir/repository/maven-public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <properties>
+                <sonar.host.url>
+                    http://sonarqube.tamin.org:9000
+                </sonar.host.url>
+            </properties>
+        </profile>
+
+        <!-- Deployment repository endpoints configuration -->
+        <profile>
+            <id>nexus-deploy</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <altReleaseDeploymentRepository>
+                    nexus-releases::default::https://nexus.tamin.ir/repository/maven-releases/
+                </altReleaseDeploymentRepository>
+                <altSnapshotDeploymentRepository>
+                    nexus-snapshots::default::https://nexus.tamin.ir/repository/maven-snapshots/
+                </altSnapshotDeploymentRepository>
+            </properties>
+        </profile>
+    </profiles>
+
+</settings>
