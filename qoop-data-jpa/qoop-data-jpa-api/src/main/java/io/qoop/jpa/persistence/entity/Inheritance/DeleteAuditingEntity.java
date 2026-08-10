@@ -1,23 +1,21 @@
-package io.qoop.jpa.persistence.entity;
+package io.qoop.jpa.persistence.entity.Inheritance;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-@MappedSuperclass
 @Getter
 @Setter
 @ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class ActiveDeleteAuditingEntity extends ActiveAuditingEntity {
+public abstract class DeleteAuditingEntity extends AuditingEntity {
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
-    private Boolean deleted = false;
+    private boolean deleted = false;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;

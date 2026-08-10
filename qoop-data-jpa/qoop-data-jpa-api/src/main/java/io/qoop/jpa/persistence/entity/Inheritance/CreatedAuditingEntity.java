@@ -1,4 +1,4 @@
-package io.qoop.jpa.persistence.entity;
+package io.qoop.jpa.persistence.entity.Inheritance;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

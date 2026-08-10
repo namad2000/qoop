@@ -1,9 +1,8 @@
-package io.qoop.domain.model;
+package io.qoop.domain.model.Inheritance;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -14,14 +13,11 @@ import java.time.LocalDateTime;
  * Created: 12/7/2025 4:59 PM
  */
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class UpdateModel<ID> extends CreatedModel<ID> {
-    protected ID id;
-    protected LocalDateTime updatedAt;
-    protected String updatedBy;
-    protected Integer version;
+public class CreatedModel<ID> {
+    private LocalDateTime createdAt;
+    private String createdBy;
 }

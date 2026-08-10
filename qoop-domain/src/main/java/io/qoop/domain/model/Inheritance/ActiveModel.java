@@ -1,4 +1,4 @@
-package io.qoop.domain.model;
+package io.qoop.domain.model.Inheritance;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
