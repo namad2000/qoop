@@ -21,5 +21,10 @@
             <groupId>io.qoop</groupId>
             <artifactId>qoop-yml-property</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-security-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

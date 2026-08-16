@@ -14,11 +14,19 @@ public interface User {
         return SYSTEM_USER;
     }
 
-    String getOrganization();
+    default String getOrganization() {
+        return SYSTEM_USER;
+    }
 
-    String[] getRoles();
+    default String[] getRoles() {
+        return new String[]{SYSTEM_USER};
+    }
 
-    boolean isVirtual();
+    default Boolean isVirtual() {
+        return false;
+    }
 
-    boolean isAuthenticated();
+    default Boolean isAuthenticated() {
+        return true;
+    }
 }
