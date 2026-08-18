@@ -1,4 +1,4 @@
-package io.qoop.logs;
+package io.qoop.logs.config;
 
 import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.Logger;
@@ -18,7 +18,7 @@ public class LoggingAutoConfig {
      * Read the log pattern from application.yml.
      * If not provided, use the default pattern with Trace and Correlation IDs.
      */
-    @Value("${logging.pattern.console:[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level [Corr: %X{correlationId:-}] [Trace: %X{traceId:-}, Span: %X{spanId:-}] %logger{36} - %msg%n}")
+    @Value("${logging.pattern.console:[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %-5level [Corr: %X{correlationId:-}] [Trace: %X{traceId:-}, Span: %X{spanId:-}] [Key: %X{logKey:-}] %logger{36} - %msg%n}")
     private String logPattern;
 
     @PostConstruct
@@ -44,7 +44,10 @@ public class LoggingAutoConfig {
         asyncAppender.setContext(context);
         asyncAppender.setName("ASYNC_CONSOLE");
         asyncAppender.setQueueSize(512);
-        asyncAppender.setDiscardingThreshold(0); // Keep all logs regardless of level
+        asyncAppender.setDiscardingThreshold(0);
+
+        asyncAppender.setIncludeCallerData(true);
+
         asyncAppender.addAppender(consoleAppender);
         asyncAppender.start();
 

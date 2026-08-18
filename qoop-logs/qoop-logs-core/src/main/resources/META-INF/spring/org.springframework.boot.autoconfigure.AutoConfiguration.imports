@@ -1,4 +1,6 @@
-io.qoop.logs.AsyncConfig
-io.qoop.logs.TracingConfig
+io.qoop.logs.config.AsyncConfig
+io.qoop.logs.config.TracingConfig
 io.qoop.logs.filter.CorrelationIdFilter
-io.qoop.logs.LoggingAutoConfig
+io.qoop.logs.config.LoggingAutoConfig
+io.qoop.logs.LoggedAspect
+io.qoop.logs.QoopDomainLogger

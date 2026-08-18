@@ -1,10 +1,9 @@
-package io.qoop.logs;
+package io.qoop.logs.config;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,16 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 )
 class LoggingAutoConfigTest {
 
-    @Autowired
-    private LoggingAutoConfig config;
-
     @Test
     void shouldConfigureAsyncConsoleAppender() {
-        LoggerContext context =
-                (LoggerContext) LoggerFactory.getILoggerFactory();
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-        Logger rootLogger =
-                context.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
 
         assertTrue(
                 rootLogger.iteratorForAppenders()

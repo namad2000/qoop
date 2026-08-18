@@ -1,4 +1,4 @@
-package io.qoop.logs;
+package io.qoop.logs.config;
 
 import brave.context.slf4j.MDCScopeDecorator;
 import brave.propagation.CurrentTraceContext;

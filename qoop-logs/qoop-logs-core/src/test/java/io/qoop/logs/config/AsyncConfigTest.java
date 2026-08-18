@@ -1,4 +1,4 @@
-package io.qoop.logs;
+package io.qoop.logs.config;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

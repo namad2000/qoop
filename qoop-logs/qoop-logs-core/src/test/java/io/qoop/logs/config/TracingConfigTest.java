@@ -1,4 +1,4 @@
-package io.qoop.logs;
+package io.qoop.logs.config;
 
 import brave.propagation.CurrentTraceContext;
 import org.junit.jupiter.api.Test;
