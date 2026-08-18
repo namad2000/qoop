@@ -7,6 +7,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -54,5 +55,11 @@ public class LoggingAutoConfig {
         // 4. Clear existing appenders and attach the new Async Console appender
         rootLogger.detachAndStopAllAppenders();
         rootLogger.addAppender(asyncAppender);
+    }
+
+    @PreDestroy
+    public void stopLogging() {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.stop();
     }
 }
