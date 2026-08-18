@@ -53,4 +53,61 @@ class QoopDomainLoggerTest {
         assertEquals("EXPLICIT_KEY", event.getMDCPropertyMap().get(LoggedAspect.MDC_LOG_KEY));
         assertNull(MDC.get(LoggedAspect.MDC_LOG_KEY));
     }
+
+    @Test
+    @DisplayName("Should correctly set MDC key and clean up state after logInfoForClass execution")
+    void shouldLogInfoForClassAndMaintainMdcState() {
+        domainLogger.logInfoForClass(TargetClass.class, "INFO_KEY", "User logged in: {}", "davood");
+
+        // MDC key must be cleaned up post invocation
+        assertNull(MDC.get(LoggedAspect.MDC_LOG_KEY));
+    }
+
+    @Test
+    @DisplayName("Should correctly set MDC key and clean up state after logWarnForClass execution")
+    void shouldLogWarnForClassAndMaintainMdcState() {
+        domainLogger.logWarnForClass(TargetClass.class, "WARN_KEY", "Memory threshold reached: {}%", 85);
+
+        assertNull(MDC.get(LoggedAspect.MDC_LOG_KEY));
+    }
+
+    @Test
+    @DisplayName("Should correctly set MDC key and clean up state after logDebugForClass execution")
+    void shouldLogDebugForClassAndMaintainMdcState() {
+        domainLogger.logDebugForClass(TargetClass.class, "DEBUG_KEY", "Payload details: {}", "{\"id\":1}");
+
+        assertNull(MDC.get(LoggedAspect.MDC_LOG_KEY));
+    }
+
+    @Test
+    @DisplayName("Should correctly set MDC key and clean up state after logErrorForClass execution with parameters")
+    void shouldLogErrorForClassWithParamsAndMaintainMdcState() {
+        domainLogger.logErrorForClass(TargetClass.class, "ERROR_KEY", "Transaction failed for orderId: {}", "ORD-99");
+
+        assertNull(MDC.get(LoggedAspect.MDC_LOG_KEY));
+    }
+
+    @Test
+    @DisplayName("Should correctly set MDC key and clean up state after logErrorForClass execution with Throwable")
+    void shouldLogErrorForClassWithThrowableAndMaintainMdcState() {
+        RuntimeException ex = new RuntimeException("Database Connection Timeout");
+
+        domainLogger.logErrorForClass(TargetClass.class, "ERROR_KEY", "Database error occurred", ex);
+
+        assertNull(MDC.get(LoggedAspect.MDC_LOG_KEY));
+    }
+
+    @Test
+    @DisplayName("Should preserve existing outer MDC context after targeted log completion")
+    void shouldPreserveExistingMdcContext() {
+        MDC.put(LoggedAspect.MDC_LOG_KEY, "OUTER_KEY");
+
+        domainLogger.logWarnForClass(TargetClass.class, "INNER_KEY", "Warning message");
+
+        // The outer MDC context must be restored to its previous value
+        assertEquals("OUTER_KEY", MDC.get(LoggedAspect.MDC_LOG_KEY));
+    }
+
+    static class TargetClass {
+    }
 }

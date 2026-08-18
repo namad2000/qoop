@@ -66,8 +66,28 @@ public class QoopDomainLogger implements DomainLogger {
     }
 
     @Override
-    public void logForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+    public void logInfoForClass(Class<?> targetClass, String logKey, String message, Object... params) {
         log(Level.INFO, targetClass, logKey, message, params, null);
+    }
+
+    @Override
+    public void logWarnForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+        log(Level.WARN, targetClass, logKey, message, params, null);
+    }
+
+    @Override
+    public void logDebugForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+        log(Level.DEBUG, targetClass, logKey, message, params, null);
+    }
+
+    @Override
+    public void logErrorForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+        log(Level.ERROR, targetClass, logKey, message, params, null);
+    }
+
+    @Override
+    public void logErrorForClass(Class<?> targetClass, String logKey, String message, Throwable throwable) {
+        log(Level.ERROR, targetClass, logKey, message, new Object[0], throwable);
     }
 
     // =========================================================================

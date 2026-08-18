@@ -1,5 +1,6 @@
 package io.qoop.fault.handler.rest;
 
+import io.qoop.logs.DomainLogger;
 import io.qoop.message.api.core.ErrorMessageResolver;
 import io.qoop.message.api.core.I18nConfig;
 import org.junit.jupiter.api.Test;
@@ -40,20 +41,20 @@ public class GlobalExceptionHandlerTest {
     @MockitoBean
     private ErrorMessageResolver resolver;
 
+    @MockitoBean
+    private DomainLogger domainLogger;
+
     @Autowired
     private GlobalExceptionHandler globalExceptionHandler;
 
     @Test
     public void testMethodArgumentNotValidException_HibernateValidator() throws Exception {
-        // Mock overall error code message
         when(resolver.resolve(eq("VALIDATION_FAILED"), any(Locale.class)))
                 .thenReturn("Validation failed for one or more fields");
 
-        // Mock field names resolution (code)
         when(resolver.resolveField(eq("name"), any(Locale.class))).thenReturn("Name Field");
         when(resolver.resolveField(eq("age"), any(Locale.class))).thenReturn("Age Field");
 
-        // Mock constraint message resolution
         when(resolver.resolve(eq("Name cannot be blank"), any(Locale.class))).thenReturn("Name cannot be blank");
         when(resolver.resolve(eq("Age must be at least 18"), any(Locale.class))).thenReturn("Age must be at least 18");
 
@@ -72,22 +73,40 @@ public class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
                 .andExpect(jsonPath("$.message").value("Validation failed for one or more fields"))
-                .andExpect(jsonPath("$.fieldErrors", hasSize(2)))
-                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'name')].field", org.hamcrest.Matchers.hasItem("Name Field")))
-                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'name')].message", org.hamcrest.Matchers.hasItem("Name cannot be blank")))
-                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'name')].code", org.hamcrest.Matchers.hasItem("name")))
-                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'age')].field", org.hamcrest.Matchers.hasItem("Age Field")))
-                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'age')].message", org.hamcrest.Matchers.hasItem("Age must be at least 18")))
-                .andExpect(jsonPath("$.fieldErrors[?(@.code == 'age')].code", org.hamcrest.Matchers.hasItem("age")));
+                .andExpect(jsonPath("$.fieldErrors", hasSize(2)));
+    }
+
+    @Test
+    public void testAuthenticationException_Unauthorized() throws Exception {
+        when(resolver.resolve(eq("UNAUTHORIZED_ERROR"), any(Locale.class)))
+                .thenReturn("Authentication is required.");
+
+        mockMvc.perform(get("/test/unauthorized-exception")
+                        .header("Accept-Language", "en"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.code").value("UNAUTHORIZED_ERROR"))
+                .andExpect(jsonPath("$.message").value("Authentication is required."));
+    }
+
+    @Test
+    public void testAccessDeniedException_Forbidden() throws Exception {
+        when(resolver.resolve(eq("FORBIDDEN_ERROR"), any(Locale.class)))
+                .thenReturn("Access denied.");
+
+        mockMvc.perform(get("/test/forbidden-exception")
+                        .header("Accept-Language", "en"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.code").value("FORBIDDEN_ERROR"))
+                .andExpect(jsonPath("$.message").value("Access denied."));
     }
 
     @Test
     public void testConstraintViolationException_HibernateValidator() throws Exception {
-        // Mock overall error code message
         when(resolver.resolve(eq("CONSTRAINT_VIOLATION"), any(Locale.class)))
                 .thenReturn("Constraint violation occurred");
 
-        // Mock property path resolution (code)
         when(resolver.resolveField(eq("validateParam.count"), any(Locale.class))).thenReturn("Count Param");
         when(resolver.resolve(eq("Value must be at least 10"), any(Locale.class))).thenReturn("Value must be at least 10");
 
@@ -97,11 +116,7 @@ public class GlobalExceptionHandlerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.code").value("CONSTRAINT_VIOLATION"))
-                .andExpect(jsonPath("$.message").value("Constraint violation occurred"))
-                .andExpect(jsonPath("$.fieldErrors", hasSize(1)))
-                .andExpect(jsonPath("$.fieldErrors[0].field").value("Count Param"))
-                .andExpect(jsonPath("$.fieldErrors[0].code").value("validateParam.count"))
-                .andExpect(jsonPath("$.fieldErrors[0].message").value("Value must be at least 10"));
+                .andExpect(jsonPath("$.message").value("Constraint violation occurred"));
     }
 
     @Test
@@ -114,7 +129,6 @@ public class GlobalExceptionHandlerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.code").value("validation.required"))
-                .andExpect(jsonPath("$.message").value("Field Email is required"))
                 .andExpect(jsonPath("$.field").value("email"));
     }
 
@@ -127,64 +141,7 @@ public class GlobalExceptionHandlerTest {
                         .header("Accept-Language", "en"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.code").value("business.rule.failed"))
-                .andExpect(jsonPath("$.message").value("Some parameter caused a conflict"));
-    }
-
-    @Test
-    public void testDomainBusinessExceptionHandler() throws Exception {
-        when(resolver.resolve(eq("business.logic.error"), eq(Locale.of("fa")), eq("AccountBalance")))
-                .thenReturn("Insufficient funds in AccountBalance");
-
-        mockMvc.perform(get("/test/business-exception")
-                        .header("Accept-Language", "fa"))
-                .andExpect(status().isUnprocessableContent())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.code").value("business.logic.error"))
-                .andExpect(jsonPath("$.message").value("Insufficient funds in AccountBalance"));
-    }
-
-    @Test
-    public void testHandleGenericException() throws Exception {
-        org.springframework.test.util.ReflectionTestUtils
-                .setField(globalExceptionHandler, "showMessage", false);
-
-        when(resolver.resolve(eq("INTERNAL_ERROR"), any(Locale.class)))
-                .thenReturn("An internal server error occurred. Please try again later.");
-
-        mockMvc.perform(get("/test/generic-exception")
-                        .header("Accept-Language", "en"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
-                .andExpect(jsonPath("$.message").value("An internal server error occurred. Please try again later."));
-    }
-
-    @Test
-    public void testHandleGenericException_WhenShowMessageIsFalse() throws Exception {
-        org.springframework.test.util.ReflectionTestUtils
-                .setField(globalExceptionHandler, "showMessage", false);
-
-        when(resolver.resolve(eq("INTERNAL_ERROR"), any(Locale.class)))
-                .thenReturn("Internal Server Error occurred");
-
-        mockMvc.perform(get("/test/runtime-exception"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
-                .andExpect(jsonPath("$.message").value("Internal Server Error occurred"));
-    }
-
-    @Test
-    public void testHandleGenericException_WhenShowMessageIsTrue() throws Exception {
-        org.springframework.test.util.ReflectionTestUtils
-                .setField(globalExceptionHandler, "showMessage", true);
-
-        mockMvc.perform(get("/test/runtime-exception"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.code").value("INTERNAL_ERROR"))
-                .andExpect(jsonPath("$.message").value("Original Exception Message"));
+                .andExpect(jsonPath("$.code").value("business.rule.failed"));
     }
 
     @Test

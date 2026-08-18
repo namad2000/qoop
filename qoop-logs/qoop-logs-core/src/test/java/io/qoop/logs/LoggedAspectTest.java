@@ -72,7 +72,7 @@ class LoggedAspectTest {
         assertEquals("SUCCESS", result);
 
         // Verify entry log with JSON serialized arguments
-        verify(domainLogger).logForClass(
+        verify(domainLogger).logInfoForClass(
                 eq(TestTarget.class),
                 eq("BANK_KEY"),
                 eq("Entering method: {} | Arguments: {}"),
@@ -81,7 +81,7 @@ class LoggedAspectTest {
         );
 
         // Verify exit log with JSON serialized return result
-        verify(domainLogger).logForClass(
+        verify(domainLogger).logInfoForClass(
                 eq(TestTarget.class),
                 eq("BANK_KEY"),
                 eq("Exiting method: {} | Result: {}"),
@@ -110,7 +110,7 @@ class LoggedAspectTest {
         loggedAspect.logExecution(joinPoint);
 
         // Verify entry log used fallback toString() representation
-        verify(domainLogger).logForClass(
+        verify(domainLogger).logInfoForClass(
                 eq(TestTarget.class),
                 eq("BANK_KEY"),
                 eq("Entering method: {} | Arguments: {}"),
@@ -135,7 +135,7 @@ class LoggedAspectTest {
         loggedAspect.logExecution(joinPoint);
 
         // Verify entry log handles null argument
-        verify(domainLogger).logForClass(
+        verify(domainLogger).logInfoForClass(
                 eq(TestTarget.class),
                 eq("BANK_KEY"),
                 eq("Entering method: {} | Arguments: {}"),
@@ -144,7 +144,7 @@ class LoggedAspectTest {
         );
 
         // Verify exit log handles null result
-        verify(domainLogger).logForClass(
+        verify(domainLogger).logInfoForClass(
                 eq(TestTarget.class),
                 eq("BANK_KEY"),
                 eq("Exiting method: {} | Result: {}"),
@@ -170,7 +170,7 @@ class LoggedAspectTest {
         assertThrows(RuntimeException.class, () -> loggedAspect.logExecution(joinPoint));
 
         // Verify exception log
-        verify(domainLogger).logForClass(
+        verify(domainLogger).logInfoForClass(
                 eq(TestTarget.class),
                 eq("BANK_KEY"),
                 eq("Exception in method: {} | Message: {}"),

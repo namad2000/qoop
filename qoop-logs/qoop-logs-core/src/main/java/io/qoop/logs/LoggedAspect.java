@@ -45,7 +45,7 @@ public class LoggedAspect {
         // Convert arguments to readable JSON representations
         String serializedArgs = serializeArguments(args);
 
-        domainLogger.logForClass(
+        domainLogger.logInfoForClass(
                 targetClass,
                 logKey,
                 "Entering method: {} | Arguments: {}",
@@ -59,7 +59,7 @@ public class LoggedAspect {
             // Convert return object to JSON string
             String serializedResult = serializeObject(result);
 
-            domainLogger.logForClass(
+            domainLogger.logInfoForClass(
                     targetClass,
                     logKey,
                     "Exiting method: {} | Result: {}",
@@ -69,7 +69,7 @@ public class LoggedAspect {
 
             return result;
         } catch (Throwable throwable) {
-            domainLogger.logForClass(
+            domainLogger.logInfoForClass(
                     targetClass,
                     logKey,
                     "Exception in method: {} | Message: {}",

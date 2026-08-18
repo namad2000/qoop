@@ -52,7 +52,27 @@ public class NoOpDomainLogger implements DomainLogger {
     }
 
     @Override
-    public void logForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+    public void logInfoForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+        // Intentional No-Op
+    }
+
+    @Override
+    public void logWarnForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+        // Intentional No-Op
+    }
+
+    @Override
+    public void logDebugForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+        // Intentional No-Op
+    }
+
+    @Override
+    public void logErrorForClass(Class<?> targetClass, String logKey, String message, Object... params) {
+        // Intentional No-Op
+    }
+
+    @Override
+    public void logErrorForClass(Class<?> targetClass, String logKey, String message, Throwable throwable) {
         // Intentional No-Op
     }
 }

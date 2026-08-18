@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +38,16 @@ public class TestController {
 
     @GetMapping("/param-validation")
     public void validateParam(@RequestParam @Min(value = 10, message = "Value must be at least 10") int count) {
+    }
+
+    @GetMapping("/unauthorized-exception")
+    public void throwUnauthorized() {
+        throw new BadCredentialsException("Invalid credentials");
+    }
+
+    @GetMapping("/forbidden-exception")
+    public void throwForbidden() {
+        throw new AccessDeniedException("User does not have required role");
     }
 
     @GetMapping("/validation-exception")
