@@ -39,6 +39,7 @@
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
                     </snapshots>
                 </repository>
                 <!-- Dedicated repository for SNAPSHOT artifacts -->
@@ -54,6 +55,32 @@
                     </snapshots>
                 </repository>
             </repositories>
+            <pluginRepositories>
+                <!-- Public repository for build plugins -->
+                <pluginRepository>
+                    <id>nexus-public-plugins</id>
+                    <url>https://nexus.tamin.ir/repository/maven-public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+                <!-- Dedicated repository for SNAPSHOT plugins -->
+                <pluginRepository>
+                    <id>nexus-snapshots-plugins</id>
+                    <url>https://nexus.tamin.ir/repository/maven-snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
             <properties>
                 <sonar.host.url>
                     http://sonarqube.tamin.org:9000
