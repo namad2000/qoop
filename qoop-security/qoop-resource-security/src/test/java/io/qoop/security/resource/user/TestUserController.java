@@ -22,4 +22,11 @@ public class TestUserController {
         // 'user' is automatically populated by the Resolver
         return "Current user is: " + user.getName();
     }
+
+    public void unannotatedMethod(User user) {
+    }
+
+    public String getString(@CurrentUser String value) {
+        return value;
+    }
 }

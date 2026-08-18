@@ -1,7 +1,8 @@
-package io.qoop.security.resource;
+package io.qoop.security.resource.config.controller;
 
 
 import io.qoop.security.api.PrefixPath;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping
-class TestController {
+public class TestController {
 
     @GetMapping(PrefixPath.INTERNAL + "/hello")
     public String publicHello() {
@@ -31,6 +32,12 @@ class TestController {
     @GetMapping("/public/api")
     public String whitelistedApi() {
         return "whitelisted content";
+    }
+
+    @RolesAllowed("ALL_USERS")
+    @GetMapping("/all-users/rolesAllowed")
+    public String rolesAllowed() {
+        return "OK";
     }
 }
 

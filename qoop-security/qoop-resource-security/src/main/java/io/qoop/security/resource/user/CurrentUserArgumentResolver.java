@@ -4,7 +4,9 @@ import io.qoop.security.api.CurrentUser;
 import io.qoop.security.api.User;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -35,19 +37,20 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         if (authentication == null || !authentication.isAuthenticated()) {
             return AuthenticatedUser.builder()
                     .username(User.SYSTEM_USER)
+                    .authenticated(false)
                     .build();
         }
 
-        // Handle JWT Authentication
+        String[] roles = authentication
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toArray(String[]::new);
+
+        // 1. JWT mode (when the JWT profile is active)
         if (authentication instanceof JwtAuthenticationToken jwtToken) {
             Jwt jwt = jwtToken.getToken();
 
-            // Extract roles as a String array
-            String[] roles = authentication.getAuthorities().stream()
-                    .map(Object::toString)
-                    .toArray(String[]::new);
-
-            // Use builder to construct the full user object
             return AuthenticatedUser.builder()
                     .username(jwt.getSubject())
                     .organization(jwt.getClaimAsString("organization"))
@@ -57,9 +60,25 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
                     .build();
         }
 
-        // Fallback for other authentication types
+        // 2. Introspection / Opaque Token mode (when the verify profile is active)
+        if (authentication.getPrincipal() instanceof OAuth2AuthenticatedPrincipal principal) {
+
+            return AuthenticatedUser.builder()
+                    .username(principal.getName())
+                    .organization(
+                            principal.getAttribute("organization")
+                    )
+                    .roles(roles)
+                    .virtual(Boolean.TRUE.equals(principal.getAttribute("virtual")))
+                    .authenticated(true)
+                    .build();
+        }
+
+        // Fallback mode
         return AuthenticatedUser.builder()
                 .username(authentication.getName())
+                .roles(roles)
+                .authenticated(true)
                 .build();
     }
 }

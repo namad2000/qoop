@@ -4,4 +4,4 @@ spring:
       resourceserver:
         jwt:
           # The URL you provided for public keys
-          jwk-set-uri: ${security.oauth2.resourceserver.jwt.jwk-set-uri}
+          jwk-set-uri: ${security.oauth2.jwt.jwk-set-uri}

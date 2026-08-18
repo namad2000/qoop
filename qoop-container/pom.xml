@@ -14,6 +14,10 @@
 
     <packaging>pom</packaging>
 
+    <properties>
+        <security.profile>no-security</security.profile>
+    </properties>
+
     <profiles>
         <profile>
             <id>e-development</id>
@@ -124,7 +128,26 @@
         </profile>
 
         <profile>
-            <id>c-resource-security</id>
+            <id>c-jwt-resource-security</id>
+
+            <properties>
+                <security.profile>jwt</security.profile>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-resource-security</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>c-opaque-resource-security</id>
+
+            <properties>
+                <security.profile>opaque</security.profile>
+            </properties>
 
             <dependencies>
                 <dependency>
