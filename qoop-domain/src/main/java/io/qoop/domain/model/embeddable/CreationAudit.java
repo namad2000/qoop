@@ -12,6 +12,6 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 public class CreationAudit {
-    private LocalDateTime createdAt;
-    private String createdBy;
+    protected LocalDateTime createdAt;
+    protected String createdBy;
 }

@@ -14,8 +14,8 @@ import lombok.experimental.SuperBuilder;
 public abstract class AuditingDomain<ID> extends IDDomain<ID> {
 
     @Builder.Default
-    private AuditInfo audit = new AuditInfo();
+    protected AuditInfo audit = new AuditInfo();
 
     @Builder.Default
-    private Long version = 0L;
+    protected Long version = 0L;
 }

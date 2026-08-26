@@ -16,9 +16,9 @@ public class UpdateAudit {
 
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 
     @LastModifiedBy
     @Column(name = "UPDATED_BY", length = 10)
-    private String updatedBy;
+    protected String updatedBy;
 }

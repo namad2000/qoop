@@ -11,8 +11,8 @@ import lombok.Setter;
 public class AuditInfo {
 
     @Embedded
-    private CreationAudit creation = new CreationAudit();
+    protected CreationAudit creation = new CreationAudit();
 
     @Embedded
-    private UpdateAudit update = new UpdateAudit();
+    protected UpdateAudit update = new UpdateAudit();
 }

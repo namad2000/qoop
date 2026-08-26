@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 public class SoftDeletionAudit {
 
     @Column(name = "IS_DELETED", nullable = false)
-    private Boolean deleted = Boolean.FALSE;
+    protected Boolean deleted = Boolean.FALSE;
 
     @Column(name = "DELETED_AT")
-    private LocalDateTime deletedAt;
+    protected LocalDateTime deletedAt;
 
     @Column(name = "DELETED_BY", length = 10)
-    private String deletedBy;
+    protected String deletedBy;
 }

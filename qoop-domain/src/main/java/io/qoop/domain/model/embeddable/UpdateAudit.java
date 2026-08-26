@@ -13,6 +13,6 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 public class UpdateAudit {
-    private LocalDateTime updatedAt;
-    private String updatedBy;
+    protected LocalDateTime updatedAt;
+    protected String updatedBy;
 }

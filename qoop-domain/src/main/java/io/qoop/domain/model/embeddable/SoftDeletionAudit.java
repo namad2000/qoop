@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 public class SoftDeletionAudit {
-    private Boolean deleted = Boolean.FALSE;
-    private LocalDateTime deletedAt;
-    private String deletedBy;
+    protected Boolean deleted = Boolean.FALSE;
+    protected LocalDateTime deletedAt;
+    protected String deletedBy;
 }

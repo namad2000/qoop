@@ -16,9 +16,9 @@ public class CreationAudit {
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 
     @CreatedBy
     @Column(name = "CREATED_BY", nullable = false, updatable = false, length = 10)
-    private String createdBy;
+    protected String createdBy;
 }

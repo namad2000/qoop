@@ -10,5 +10,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public abstract class IDDomain<ID> {
-    private ID id;
+    protected ID id;
 }

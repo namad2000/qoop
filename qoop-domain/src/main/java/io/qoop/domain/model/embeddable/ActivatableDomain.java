@@ -1,6 +1,6 @@
 package io.qoop.domain.model.embeddable;
 
-import lombok.Builder;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,11 +10,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public class AuditInfo {
-
-    @Builder.Default
-    protected CreationAudit creation = new CreationAudit();
-
-    @Builder.Default
-    protected UpdateAudit update = new UpdateAudit();
+public class ActivatableDomain<ID> extends AuditingDomain<ID> {
+    protected boolean activated;
 }
