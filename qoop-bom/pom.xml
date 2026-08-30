@@ -230,6 +230,11 @@
             </dependency>
             <dependency>
                 <groupId>io.qoop</groupId>
+                <artifactId>qoop-utils-core</artifactId>
+                <version>${qoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.qoop</groupId>
                 <artifactId>qoop-application</artifactId>
                 <version>${qoop.version}</version>
             </dependency>
