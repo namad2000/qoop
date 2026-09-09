@@ -31,6 +31,8 @@
         <qoop-gateway-open-api-doc.version>0.0.1-SNAPSHOT</qoop-gateway-open-api-doc.version>
         <qoop-feign.version>0.0.1-SNAPSHOT</qoop-feign.version>
         <qoop-filter-wrapper.version>0.0.1-SNAPSHOT</qoop-filter-wrapper.version>
+        <qoop-batch.version>0.0.1-SNAPSHOT</qoop-batch.version>
+        <qoop-cluster.version>0.0.1-SNAPSHOT</qoop-cluster.version>
         <qoop-global-config.version>0.0.1-SNAPSHOT</qoop-global-config.version>
         <qoop-e2e-test.version>0.0.1-SNAPSHOT</qoop-e2e-test.version>
 
@@ -369,6 +371,18 @@
                 <groupId>io.qoop</groupId>
                 <artifactId>qoop-filter-wrapper-core</artifactId>
                 <version>${qoop-filter-wrapper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-batch-core</artifactId>
+                <version>${qoop-batch.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-cluster</artifactId>
+                <version>${qoop-cluster.version}</version>
             </dependency>
 
             <dependency>

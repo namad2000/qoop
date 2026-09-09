@@ -79,7 +79,7 @@ public class ClusterNodeCounter {
     /**
      * Scans node keys using the modern non-deprecated API.
      */
-    private Stream<String> scanNodeKeys() {
+    public Stream<String> scanNodeKeys() {
         KeysScanOptions options = KeysScanOptions.defaults()
                 .pattern(keys.nodeKeyScanPattern());
         return redisson.getKeys().getKeysStream(options);

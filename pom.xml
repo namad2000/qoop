@@ -43,5 +43,6 @@
         <module>qoop-global-config</module>
         <module>qoop-e2e-test</module>
         <module>qoop-cluster</module>
+        <module>qoop-batch</module>
     </modules>
 </project>
