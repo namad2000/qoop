@@ -33,17 +33,17 @@ public class KafkaPublisherConfig {
 
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
-        KafkaTemplate<String, Object> template = new KafkaTemplate<>(producerFactory);
         // Note: No need to set prefix here as it's handled in the factory.
-        return template;
+        return new KafkaTemplate<>(producerFactory);
     }
 
     // Required for managing transactions on the consumer side
     @Bean
-    public KafkaTransactionManager transactionManager(ProducerFactory<String, Object> producerFactory) {
+    public KafkaTransactionManager<String, Object> transactionManager(ProducerFactory<String, Object> producerFactory) {
         if (kafkaProperties.getTransaction().isEnabled()) {
             return new KafkaTransactionManager<>(producerFactory);
         }
+
         return null;
     }
 

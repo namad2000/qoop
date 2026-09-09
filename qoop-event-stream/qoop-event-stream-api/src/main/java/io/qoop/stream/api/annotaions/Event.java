@@ -1,4 +1,4 @@
-package io.qoop.stream.api;
+package io.qoop.stream.api.annotaions;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Event {
     String value(); // Event name or channel
+
+    Header[] headers() default {}; // Associated metadata and headers of the message
 }

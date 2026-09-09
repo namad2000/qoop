@@ -42,7 +42,9 @@
         <module>qoop-filter-wrapper</module>
         <module>qoop-global-config</module>
         <module>qoop-e2e-test</module>
+        <module>qoop-outbox</module>
         <module>qoop-cluster</module>
         <module>qoop-batch</module>
+        <module>qoop-shedlock</module>
     </modules>
 </project>

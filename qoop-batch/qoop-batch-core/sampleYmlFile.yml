@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: qoop-batch-app
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+batch:
+  task-executor:
+    type: async
+    thread-name-prefix: batch-
+    concurrency-limit: 10
+
+partition:
+  strategy:
+    force-local: false
+  grid-size: 4
+  chunk-size: 10
+
+kafka:
+  enabled: true
+
+cluster:
+  heartbeat:
+    ttl-seconds: 60
+    interval-seconds: 20
+
+logging:
+  level:
+    io.qoop: DEBUG
+    org.springframework.batch: INFO

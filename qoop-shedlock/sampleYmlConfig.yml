@@ -1,0 +1,16 @@
+# ShedLock Configuration
+shedlock:
+  # Lock provider: database or redis
+  provider: database
+
+  # Default lock time (ISO-8601 duration)
+  default-lock-at-most-for: PT30S
+
+  # Database configuration
+  database:
+    table-name: shedlock
+
+  # Redis configuration
+  redis:
+    key-prefix: shedlock
+    environment: ${spring.application.name:outbox-app}

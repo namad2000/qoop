@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: qoop-app
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+cluster:
+  heartbeat:
+    ttl-seconds: 60
+    interval-seconds: 20
+
+logging:
+  level:
+    io.qoop.cluster: DEBUG
