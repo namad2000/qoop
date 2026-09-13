@@ -11,24 +11,10 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!-- ShedLock Core -->
+        <!-- Core ShedLock -->
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-spring</artifactId>
-        </dependency>
-
-        <!-- ShedLock JDBC Provider (optional) -->
-        <dependency>
-            <groupId>net.javacrumbs.shedlock</groupId>
-            <artifactId>shedlock-provider-jdbc-template</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- ShedLock Redis Provider (optional) -->
-        <dependency>
-            <groupId>net.javacrumbs.shedlock</groupId>
-            <artifactId>shedlock-provider-redis-spring</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- Spring Boot Auto-Configuration -->
@@ -37,21 +23,27 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
 
-        <!-- Spring Boot Starter Data Redis (optional) -->
+        <!-- JDBC Lock Provider -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-            <optional>true</optional>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-provider-jdbc-template</artifactId>
         </dependency>
-
-        <!-- Spring Boot Starter JDBC (optional) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <optional>true</optional>
         </dependency>
 
-        <!-- Configuration Processor -->
+        <!-- Redis Lock Provider -->
+        <dependency>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-provider-redis-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Configuration Metadata Processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>

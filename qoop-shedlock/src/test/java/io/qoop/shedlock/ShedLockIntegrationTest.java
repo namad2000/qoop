@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.sql.DataSource;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.mock;
         ShedLockIntegrationTest.TestConfig.class,
         ShedLockAutoConfiguration.class
 })
+@ActiveProfiles("shedlock-db")
 @TestPropertySource(properties = {
         "shedlock.provider=database",
         "shedlock.database.table-name=test_shedlock"

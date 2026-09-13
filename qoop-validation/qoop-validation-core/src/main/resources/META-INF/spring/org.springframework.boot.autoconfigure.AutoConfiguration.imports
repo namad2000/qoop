@@ -1,2 +1,3 @@
+io.qoop.validation.core.Validator
 io.qoop.validation.core.configuration.ValidationConfig
 io.qoop.validation.core.ValidationAspect

@@ -38,16 +38,16 @@ public class PartitionConfiguration {
     private final ClusterNodeCounter nodeCounter;
     private final ClusterRoleDetector roleDetector;
 
-    @Value("${partition.strategy.force-local:false}")
+    @Value("${batch.partition.strategy.force-local:false}")
     private boolean forceLocal;
 
-    @Value("${partition.grid-size:4}")
+    @Value("${batch.partition.grid-size:4}")
     private int gridSize;
 
-    @Value("${partition.chunk-size:10}")
+    @Value("${batch.partition.chunk-size:10}")
     private int chunkSize;
 
-    @Value("${kafka.enabled:true}")
+    @Value("${batch.kafka.enabled:true}")
     private boolean kafkaEnabled;
 
     /**

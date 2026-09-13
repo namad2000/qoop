@@ -18,15 +18,14 @@ batch:
     type: async
     thread-name-prefix: batch-
     concurrency-limit: 10
+  partition:
+    strategy:
+      force-local: false
+    grid-size: 4
+    chunk-size: 10
 
-partition:
-  strategy:
-    force-local: false
-  grid-size: 4
-  chunk-size: 10
-
-kafka:
-  enabled: true
+  kafka:
+    enabled: true
 
 cluster:
   heartbeat:

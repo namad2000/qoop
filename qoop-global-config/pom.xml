@@ -28,5 +28,10 @@
             <groupId>io.qoop</groupId>
             <artifactId>qoop-logs-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-outbox-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

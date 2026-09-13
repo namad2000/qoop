@@ -33,53 +33,19 @@ class ShedLockAutoConfigurationTest {
                 .withConfiguration(AutoConfigurations.of(ShedLockAutoConfiguration.class));
     }
 
-    // ==================== DATABASE PROVIDER TESTS ====================
+    // ==================== DEFAULT & REDIS PROVIDER TESTS ====================
 
     @Test
-    @DisplayName("Should create Database LockProvider by default when provider is not set")
-    void shouldCreateDatabaseLockProviderByDefault() {
+    @DisplayName("Should create Redis LockProvider by default when provider is not set")
+    void shouldCreateRedisLockProviderByDefault() {
         contextRunner
-                .withUserConfiguration(TestDatabaseConfig.class)
+                .withUserConfiguration(TestRedisConfig.class)
                 .run(context -> {
                     assertThat(context).hasSingleBean(LockProvider.class);
                     assertThat(context.getBean(LockProvider.class))
-                            .isInstanceOf(JdbcTemplateLockProvider.class);
+                            .isInstanceOf(RedisLockProvider.class);
                 });
     }
-
-    @Test
-    @DisplayName("Should create Database LockProvider when provider is 'database'")
-    void shouldCreateDatabaseLockProviderWhenProviderIsDatabase() {
-        contextRunner
-                .withUserConfiguration(TestDatabaseConfig.class)
-                .withPropertyValues(
-                        "shedlock.provider=database"
-                )
-                .run(context -> {
-                    assertThat(context).hasSingleBean(LockProvider.class);
-                    assertThat(context.getBean(LockProvider.class))
-                            .isInstanceOf(JdbcTemplateLockProvider.class);
-                });
-    }
-
-    @Test
-    @DisplayName("Should create Database LockProvider with custom table name")
-    void shouldCreateDatabaseLockProviderWithCustomTableName() {
-        contextRunner
-                .withUserConfiguration(TestDatabaseConfig.class)
-                .withPropertyValues(
-                        "shedlock.provider=database",
-                        "shedlock.database.table-name=custom_lock_table"
-                )
-                .run(context -> {
-                    assertThat(context).hasSingleBean(LockProvider.class);
-
-                    ShedLockProperties properties = context.getBean(ShedLockProperties.class);
-                    assertThat(properties.getDatabase().getTableName()).isEqualTo("custom_lock_table");
-                });
-    }
-
-    // ==================== REDIS PROVIDER TESTS ====================
 
     @Test
     @DisplayName("Should create Redis LockProvider when provider is 'redis'")
@@ -157,19 +123,55 @@ class ShedLockAutoConfigurationTest {
                 });
     }
 
+    // ==================== DATABASE PROVIDER TESTS ====================
+
+    @Test
+    @DisplayName("Should create Database LockProvider when provider is 'database'")
+    void shouldCreateDatabaseLockProviderWhenProviderIsDatabase() {
+        contextRunner
+                .withUserConfiguration(TestDatabaseConfig.class)
+                .withPropertyValues(
+                        "spring.profiles.active=shedlock-db",
+                        "shedlock.provider=database"
+                )
+                .run(context -> {
+                    assertThat(context).hasSingleBean(LockProvider.class);
+                    assertThat(context.getBean(LockProvider.class))
+                            .isInstanceOf(JdbcTemplateLockProvider.class);
+                });
+    }
+
+    @Test
+    @DisplayName("Should create Database LockProvider with custom table name")
+    void shouldCreateDatabaseLockProviderWithCustomTableName() {
+        contextRunner
+                .withUserConfiguration(TestDatabaseConfig.class)
+                .withPropertyValues(
+                        "spring.profiles.active=shedlock-db",
+                        "shedlock.provider=database",
+                        "shedlock.database.table-name=custom_lock_table"
+                )
+                .run(context -> {
+                    assertThat(context).hasSingleBean(LockProvider.class);
+
+                    ShedLockProperties properties = context.getBean(ShedLockProperties.class);
+                    assertThat(properties.getDatabase().getTableName()).isEqualTo("custom_lock_table");
+                });
+    }
+
     // ==================== PROPERTY TESTS ====================
 
     @Test
     @DisplayName("Should use default property values when not configured")
     void shouldUseDefaultPropertyValues() {
         contextRunner
-                .withUserConfiguration(TestDatabaseConfig.class)
+                .withUserConfiguration(TestRedisConfig.class)
                 .run(context -> {
                     assertThat(context).hasSingleBean(ShedLockProperties.class);
 
                     ShedLockProperties properties = context.getBean(ShedLockProperties.class);
 
-                    assertThat(properties.getProvider()).isEqualTo("database");
+                    assertThat(properties.getProvider()).isEqualTo("redis");
                     assertThat(properties.getDefaultLockAtMostFor()).isEqualTo("PT30S");
                     assertThat(properties.getDatabase().getTableName()).isEqualTo("shedlock");
                     assertThat(properties.getRedis().getKeyPrefix()).isEqualTo("shedlock");
@@ -180,7 +182,7 @@ class ShedLockAutoConfigurationTest {
     @DisplayName("Should create LockProvider with custom default lock time")
     void shouldCreateLockProviderWithCustomDefaultLockTime() {
         contextRunner
-                .withUserConfiguration(TestDatabaseConfig.class)
+                .withUserConfiguration(TestRedisConfig.class)
                 .withPropertyValues(
                         "shedlock.default-lock-at-most-for=PT1H"
                 )
@@ -198,10 +200,10 @@ class ShedLockAutoConfigurationTest {
         contextRunner
                 .withUserConfiguration(TestExistingLockProviderConfig.class)
                 .withPropertyValues(
+                        "spring.profiles.active=shedlock-db",
                         "shedlock.provider=database"
                 )
                 .run(context -> {
-                    // فقط یک Bean از نوع LockProvider باید وجود داشته باشد (customLockProvider)
                     assertThat(context).hasSingleBean(LockProvider.class);
                     assertThat(context.getBean(LockProvider.class))
                             .isInstanceOf(CustomLockProvider.class);
@@ -271,7 +273,8 @@ class ShedLockAutoConfigurationTest {
 
         @Override
         public Optional<SimpleLock> lock(LockConfiguration lockConfiguration) {
-            return Optional.of(() -> {});
+            return Optional.of(() -> {
+            });
         }
     }
 }

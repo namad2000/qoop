@@ -15,7 +15,7 @@ class ShedLockPropertiesTest {
         ShedLockProperties properties = new ShedLockProperties();
 
         // Then
-        assertThat(properties.getProvider()).isEqualTo("database");
+        assertThat(properties.getProvider()).isEqualTo("redis");
         assertThat(properties.getDefaultLockAtMostFor()).isEqualTo("PT30S");
         assertThat(properties.getDatabase().getTableName()).isEqualTo("shedlock");
         assertThat(properties.getRedis().getKeyPrefix()).isEqualTo("shedlock");

@@ -30,8 +30,6 @@ spring:
 
 outbox:
   publisher-mode: batch
-  grid-size: 4
-  chunk-size: 100
   fixed-delay: 2000
 
   cleanup:
@@ -39,10 +37,12 @@ outbox:
     cron: 0 0 3 * * *
     retention-days: 1
 
-  batch:
+batch:
+  partition:
+    strategy:
+      force-local: false
     grid-size: 4
-    chunk-size: 100
-    fixed-delay: 2000
+    chunk-size: 10
 
 kafka:
   enabled: true

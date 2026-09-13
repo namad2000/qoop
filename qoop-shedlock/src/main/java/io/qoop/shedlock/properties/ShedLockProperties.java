@@ -29,7 +29,7 @@ public class ShedLockProperties {
     /**
      * Lock provider type: database or redis
      */
-    private String provider = "database";
+    private String provider = "redis";
 
     /**
      * Default lock time (e.g., PT30S, 30s, 30 seconds)

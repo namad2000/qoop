@@ -1,1 +1,15 @@
-io.qoop.shedlock.config.ShedLockAutoConfiguration
+io.qoop.outbox.OutboxEventPublisherAdapter
+io.qoop.outbox.AggregateIdExtractor
+io.qoop.outbox.service.OutboxErrorLogService
+io.qoop.outbox.config.OutboxPropertiesConfig
+io.qoop.outbox.scheduler.OutboxCleanupScheduler
+io.qoop.outbox.scheduler.OutboxJobScheduler
+io.qoop.outbox.config.OutboxPropertiesConfig
+io.qoop.outbox.job.OutboxBatchConfig
+io.qoop.outbox.job.step.OutboxReader
+io.qoop.outbox.job.step.OutboxProcessor
+io.qoop.outbox.job.step.OutboxWriter
+io.qoop.outbox.persistence.JpaConfig
+io.qoop.outbox.validator.OutboxMetadataValidator
+io.qoop.outbox.mapper.ErrorMessageMapperImpl
+io.qoop.outbox.mapper.OutboxEventMapperImpl

@@ -1,5 +1,6 @@
-io.qoop.cluster.ClusterKeyBuilder
-io.qoop.cluster.ClusterNodeCounter
-io.qoop.cluster.ClusterRoleDetector
-io.qoop.cluster.NodeIdentity
-io.qoop.cluster.NodeLifecycle
+io.qoop.batch.core.DynamicJobLauncher
+io.qoop.batch.partition.factory.PartitionStrategyFactory
+io.qoop.batch.config.BatchConfiguration
+io.qoop.batch.config.PartitionConfiguration
+
+

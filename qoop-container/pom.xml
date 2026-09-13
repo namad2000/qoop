@@ -211,6 +211,17 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>c-outBox</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>io.qoop</groupId>
+                    <artifactId>qoop-outbox-core</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
     <build>

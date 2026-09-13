@@ -1,2 +1,2 @@
 io.qoop.global.config.GlobalConfig
-io.qoop.global.config.DomainLoggerAutoConfiguration
+io.qoop.global.config.FallbackAutoConfiguration

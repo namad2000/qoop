@@ -49,6 +49,11 @@
 
         <dependency>
             <groupId>io.qoop</groupId>
+            <artifactId>qoop-event-stream-publisher</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.qoop</groupId>
             <artifactId>qoop-mapper-core</artifactId>
         </dependency>
 

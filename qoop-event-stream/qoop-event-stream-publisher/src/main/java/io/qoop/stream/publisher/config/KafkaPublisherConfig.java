@@ -2,7 +2,7 @@ package io.qoop.stream.publisher.config;
 
 import io.qoop.stream.starter.KafkaProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableAutoConfiguration(exclude = {KafkaAutoConfiguration.class})
+@AutoConfiguration(before = KafkaAutoConfiguration.class)
 public class KafkaPublisherConfig {
 
     private final KafkaProperties kafkaProperties;
