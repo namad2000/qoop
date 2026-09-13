@@ -22,12 +22,6 @@ import org.springframework.context.annotation.Primary;
  *   <li>If only one node alive → LOCAL</li>
  *   <li>If multiple nodes alive → HYBRID</li>
  * </ol>
- *
- * <p>In both LOCAL and HYBRID modes, each node uses local partitioning
- * with chunk-oriented execution for its assigned partitions.
- *
- * <p>Users can provide custom partitioners at runtime by using the
- * {@link PartitionStrategy#createPartitionStepWithCustomPartitioner} method.
  */
 @Slf4j
 @Configuration
@@ -39,16 +33,16 @@ public class PartitionConfiguration {
     private final ClusterRoleDetector roleDetector;
 
     @Value("${batch.partition.strategy.force-local:false}")
-    private boolean forceLocal;
+    private Boolean forceLocal;
 
     @Value("${batch.partition.grid-size:4}")
-    private int gridSize;
+    private Integer gridSize;
 
     @Value("${batch.partition.chunk-size:10}")
-    private int chunkSize;
+    private Integer chunkSize;
 
     @Value("${batch.kafka.enabled:true}")
-    private boolean kafkaEnabled;
+    private Boolean kafkaEnabled;
 
     /**
      * Creates the appropriate partition strategy based on cluster state.
@@ -60,29 +54,34 @@ public class PartitionConfiguration {
     public PartitionStrategy partitionStrategy() {
         int aliveNodes = getAliveNodeCount();
 
-        log.info("=== Partition Strategy Selection ===");
-        log.info("Force local: {}", forceLocal);
-        log.info("Kafka enabled: {}", kafkaEnabled);
-        log.info("Alive nodes: {}", aliveNodes);
-        log.info("Grid size: {}", gridSize);
-        log.info("Chunk size: {}", chunkSize);
+        boolean effectiveForceLocal = Boolean.TRUE.equals(forceLocal);
+        int effectiveGridSize = (gridSize != null) ? gridSize : 4;
+        int effectiveChunkSize = (chunkSize != null) ? chunkSize : 10;
+        boolean effectiveKafkaEnabled = Boolean.TRUE.equals(kafkaEnabled);
 
-        if (forceLocal || aliveNodes <= 1) {
-            String reason = forceLocal ? "forced by configuration" : "only one node alive";
+        log.info("=== Partition Strategy Selection ===");
+        log.info("Force local: {}", effectiveForceLocal);
+        log.info("Kafka enabled: {}", effectiveKafkaEnabled);
+        log.info("Alive nodes: {}", aliveNodes);
+        log.info("Grid size: {}", effectiveGridSize);
+        log.info("Chunk size: {}", effectiveChunkSize);
+
+        if (effectiveForceLocal || aliveNodes <= 1) {
+            String reason = effectiveForceLocal ? "forced by configuration" : "only one node alive";
             log.info("Selected: LOCAL strategy ({})", reason);
-            log.info("All {} partitions will run locally on node: {}", gridSize, nodeIdentity.getNodeId());
-            return new LocalPartitionStrategy(nodeIdentity, gridSize, chunkSize, kafkaEnabled);
+            log.info("All {} partitions will run locally on node: {}", effectiveGridSize, nodeIdentity.getNodeId());
+            return new LocalPartitionStrategy(nodeIdentity, effectiveGridSize, effectiveChunkSize, effectiveKafkaEnabled);
         }
 
         log.info("Selected: HYBRID strategy ({} nodes alive)", aliveNodes);
-        log.info("{} partitions will be distributed across {} nodes", gridSize, aliveNodes);
+        log.info("{} partitions will be distributed across {} nodes", effectiveGridSize, aliveNodes);
         return new HybridPartitionStrategy(
                 nodeIdentity,
                 nodeCounter,
                 roleDetector,
-                gridSize,
-                chunkSize,
-                kafkaEnabled
+                effectiveGridSize,
+                effectiveChunkSize,
+                effectiveKafkaEnabled
         );
     }
 

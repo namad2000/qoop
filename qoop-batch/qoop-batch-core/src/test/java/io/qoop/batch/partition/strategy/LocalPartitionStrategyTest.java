@@ -144,7 +144,7 @@ class LocalPartitionStrategyTest {
         // Then
         assertNotNull(context);
 
-        Object partitionId = context.get("partitionId");
+        Object partitionIndex = context.get("partitionIndex");
         Object nodeId = context.get("nodeId");
         Object isLocal = context.get("isLocal");
         Object contextChunkSize = context.get("chunkSize");
@@ -152,7 +152,7 @@ class LocalPartitionStrategyTest {
         Object endIndex = context.get("endIndex");
         Object timestamp = context.get("timestamp");
 
-        assertNotNull(partitionId);
+        assertNotNull(partitionIndex);
         assertNotNull(nodeId);
         assertNotNull(isLocal);
         assertNotNull(contextChunkSize);
@@ -160,7 +160,7 @@ class LocalPartitionStrategyTest {
         assertNotNull(endIndex);
         assertNotNull(timestamp);
 
-        assertThat(partitionId).isEqualTo(2);
+        assertThat(partitionIndex).isEqualTo(2);
         assertThat(nodeId).isEqualTo(selfId);
         assertThat(isLocal).isEqualTo(true);
         assertThat(contextChunkSize).isEqualTo(chunkSize);
