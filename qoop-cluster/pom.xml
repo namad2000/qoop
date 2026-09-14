@@ -20,5 +20,11 @@
             <groupId>io.qoop</groupId>
             <artifactId>qoop-yml-property</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>it.ozimov</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

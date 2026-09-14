@@ -22,58 +22,58 @@ public class ClusterRoleDetector {
     private final ClusterKeyBuilder keys;
 
     /**
-     * Attempts to acquire leadership for the given job key.
+     * Attempts to acquire leadership for the given resource key.
      */
-    public MasterElectionResult tryBecomeMaster(String jobName, long lockSeconds) {
-        RLock lock = redisson.getLock(keys.masterLockKey(jobName));
+    public MasterElectionResult tryBecomeMaster(String resourceName, long lockSeconds) {
+        RLock lock = redisson.getLock(keys.masterLockKey(resourceName));
 
         try {
             boolean acquired = lock.tryLock(0, lockSeconds, TimeUnit.SECONDS);
 
             if (acquired) {
                 long generation = System.currentTimeMillis();
-                storeGeneration(jobName, generation, lockSeconds);
+                storeGeneration(resourceName, generation, lockSeconds);
 
-                log.info("Became MASTER for job [{}] with generation [{}]",
-                        jobName, generation);
+                log.info("Became MASTER for resource [{}] with generation [{}]",
+                        resourceName, generation);
                 return MasterElectionResult.won(generation);
             } else {
-                String currentMaster = readCurrentMaster(jobName);
-                log.info("Job [{}] already has a MASTER [{}] - acting as worker",
-                        jobName, currentMaster);
+                String currentMaster = readCurrentMaster(resourceName);
+                log.info("Resource [{}] already has a MASTER [{}] - acting as worker",
+                        resourceName, currentMaster);
                 return MasterElectionResult.lost(currentMaster);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            log.warn("Master election interrupted for job [{}]", jobName);
+            log.warn("Master election interrupted for resource [{}]", resourceName);
             return MasterElectionResult.lost(null);
         }
     }
 
     /**
-     * Releases leadership for the given job key.
+     * Releases leadership for the given resource key.
      */
-    public void releaseMaster(String jobName) {
-        RLock lock = redisson.getLock(keys.masterLockKey(jobName));
+    public void releaseMaster(String resourceName) {
+        RLock lock = redisson.getLock(keys.masterLockKey(resourceName));
         if (lock.isHeldByCurrentThread()) {
             lock.unlock();
-            log.info("Released MASTER lock for job [{}]", jobName);
+            log.info("Released MASTER lock for resource [{}]", resourceName);
         }
     }
 
     /**
-     * Checks whether the current thread holds the master lock for the given job.
+     * Checks whether the current thread holds the master lock for the given resource.
      */
-    public boolean isMaster(String jobName) {
-        RLock lock = redisson.getLock(keys.masterLockKey(jobName));
+    public boolean isMaster(String resourceName) {
+        RLock lock = redisson.getLock(keys.masterLockKey(resourceName));
         return lock.isHeldByCurrentThread();
     }
 
     /**
-     * Returns the current fencing generation for the given job.
+     * Returns the current fencing generation for the given resource.
      */
-    public long currentGeneration(String jobName) {
-        RBucket<Long> bucket = redisson.getBucket(keys.generationKey(jobName));
+    public long currentGeneration(String resourceName) {
+        RBucket<Long> bucket = redisson.getBucket(keys.generationKey(resourceName));
         Long value = bucket.get();
         return value != null ? value : 0L;
     }
@@ -81,14 +81,14 @@ public class ClusterRoleDetector {
     /**
      * Stores the fencing generation for the master lock.
      */
-    private void storeGeneration(String jobName, long generation, long ttlSeconds) {
-        RBucket<Long> bucket = redisson.getBucket(keys.generationKey(jobName));
+    private void storeGeneration(String resourceName, long generation, long ttlSeconds) {
+        RBucket<Long> bucket = redisson.getBucket(keys.generationKey(resourceName));
         bucket.set(generation);
         bucket.expire(Duration.ofSeconds(ttlSeconds));
     }
 
-    private String readCurrentMaster(String jobName) {
-        RBucket<Long> bucket = redisson.getBucket(keys.generationKey(jobName));
+    private String readCurrentMaster(String resourceName) {
+        RBucket<Long> bucket = redisson.getBucket(keys.generationKey(resourceName));
         return bucket.isExists() ? "master@" + bucket.get() : "unknown";
     }
 }

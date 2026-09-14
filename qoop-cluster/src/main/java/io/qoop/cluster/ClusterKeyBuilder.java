@@ -1,5 +1,6 @@
 package io.qoop.cluster;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Component;
  * All keys are namespaced by application name to avoid collisions
  * when multiple qoop-based applications share the same Redis instance.
  */
+
+@Getter
 @Component
 public class ClusterKeyBuilder {
 

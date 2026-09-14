@@ -54,6 +54,7 @@
         <shedlock.version>5.13.0</shedlock.version>
         <qoop-outbox.version>0.0.1-SNAPSHOT</qoop-outbox.version>
         <redisson-spring-boot-starter.version>4.7.0</redisson-spring-boot-starter.version>
+        <embedded-redis.version>0.7.3</embedded-redis.version>
     </properties>
 
     <dependencyManagement>
@@ -170,6 +171,19 @@
                 <artifactId>shedlock-provider-redis-spring</artifactId>
                 <version>${shedlock.version}</version>
                 <optional>true</optional>
+            </dependency>
+
+            <!-- embedded-redis -->
+            <dependency>
+                <groupId>it.ozimov</groupId>
+                <artifactId>embedded-redis</artifactId>
+                <version>${embedded-redis.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Internal Dependencies -->
