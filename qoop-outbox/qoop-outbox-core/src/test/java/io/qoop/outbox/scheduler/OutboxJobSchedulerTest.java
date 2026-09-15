@@ -2,7 +2,6 @@ package io.qoop.outbox.scheduler;
 
 import io.qoop.batch.core.DynamicJobLauncher;
 import io.qoop.cluster.NodeIdentity;
-import io.qoop.outbox.config.OutboxProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,9 +24,6 @@ class OutboxJobSchedulerTest {
     private NodeIdentity nodeIdentity;
 
     @Mock
-    private OutboxProperties outboxProperties;
-
-    @Mock
     private JobExecution jobExecution;
 
     private OutboxJobScheduler scheduler;
@@ -35,7 +31,7 @@ class OutboxJobSchedulerTest {
     @BeforeEach
     void setUp() {
         when(nodeIdentity.getNodeId()).thenReturn("test-node-1");
-        scheduler = new OutboxJobScheduler(dynamicJobLauncher, nodeIdentity, outboxProperties);
+        scheduler = new OutboxJobScheduler(dynamicJobLauncher, nodeIdentity);
     }
 
     @Test

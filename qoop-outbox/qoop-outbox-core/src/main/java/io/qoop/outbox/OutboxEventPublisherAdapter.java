@@ -8,9 +8,9 @@ import io.qoop.outbox.validator.OutboxMetadataValidator;
 import io.qoop.stream.api.Header;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Author: davood akbari
@@ -29,18 +29,21 @@ public class OutboxEventPublisherAdapter implements OutboxEventPublisher {
     private final ObjectMapper objectMapper;
 
     @Override
-    @Transactional
     public void publish(Object payload) {
-        publish(null, payload);
+        doPublish(null, payload);
     }
 
     @Override
-    @Transactional
     public void publish(List<Header> explicitHeaders, Object payload) {
+        doPublish(explicitHeaders, payload);
+    }
+
+    private void doPublish(List<Header> explicitHeaders, Object payload) {
+        Objects.requireNonNull(payload, "Payload cannot be null");
+
         OutBoxEvent metadata = metadataValidator.validateAndGetAnnotation(payload);
         String aggregateId = aggregateIdExtractor.extract(payload);
 
-        // Mapping using MapStruct interface
         OutboxEventEntity entity = outboxEventMapper.toEntity(
                 payload,
                 aggregateId,
@@ -49,10 +52,6 @@ public class OutboxEventPublisherAdapter implements OutboxEventPublisher {
                 objectMapper
         );
 
-        persistEvent(entity);
-    }
-
-    private void persistEvent(OutboxEventEntity entity) {
         outboxEventJpaRepository.save(entity);
     }
 }

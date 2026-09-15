@@ -7,6 +7,7 @@ import io.qoop.outbox.persistence.entity.OutboxEventEntity;
 import io.qoop.stream.api.Header;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@StepScope
 @RequiredArgsConstructor
 public class OutboxProcessor implements ItemProcessor<OutboxEventEntity, KafkaMessage> {
 

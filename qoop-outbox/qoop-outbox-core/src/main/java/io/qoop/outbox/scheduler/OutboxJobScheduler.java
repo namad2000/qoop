@@ -2,7 +2,6 @@ package io.qoop.outbox.scheduler;
 
 import io.qoop.batch.core.DynamicJobLauncher;
 import io.qoop.cluster.NodeIdentity;
-import io.qoop.outbox.config.OutboxProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -19,7 +18,6 @@ public class OutboxJobScheduler {
 
     private final DynamicJobLauncher dynamicJobLauncher;
     private final NodeIdentity nodeIdentity;
-    private final OutboxProperties outboxProperties;
 
     @Scheduled(fixedDelayString = "${outbox.batch.fixed-delay:2000}")
     @SchedulerLock(name = "outboxJob", lockAtMostFor = "1m", lockAtLeastFor = "5s")

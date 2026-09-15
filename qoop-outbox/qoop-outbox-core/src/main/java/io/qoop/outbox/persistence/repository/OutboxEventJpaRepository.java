@@ -16,23 +16,18 @@ public interface OutboxEventJpaRepository extends JpaRepository<OutboxEventEntit
 
     @Query(value = """
             SELECT * FROM outbox_event
-            WHERE status = 'NEW'
-              AND MOD(ABS(ORA_HASH(TO_CHAR(id))), :gridSize) = :partitionIndex
-            ORDER BY created_at
-            FETCH FIRST :limit ROWS ONLY
+            WHERE id IN (
+                SELECT id FROM outbox_event
+                WHERE status = 'NEW'
+                  AND MOD(ABS(ORA_HASH(RAWTOHEX(id))), :gridSize) = :partitionIndex
+                ORDER BY created_at
+                FETCH FIRST :limit ROWS ONLY
+            )
             FOR UPDATE SKIP LOCKED
             """, nativeQuery = true)
     List<OutboxEventEntity> findNewForPartition(@Param("partitionIndex") int partitionIndex,
                                                 @Param("gridSize") int gridSize,
                                                 @Param("limit") int limit);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("UPDATE OutboxEventEntity e SET e.status = 'SENT', e.sentAt = :sentAt, e.version = e.version + 1 WHERE e.id = :id AND e.version = :version")
-    int markAsSent(@Param("id") UUID id, @Param("sentAt") LocalDateTime sentAt, @Param("version") Long version);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("UPDATE OutboxEventEntity e SET e.status = 'FAILED', e.retryCount = e.retryCount + 1, e.version = e.version + 1 WHERE e.id = :id AND e.version = :version")
-    int markAsFailed(@Param("id") UUID id, @Param("version") Long version);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "DELETE FROM outbox_event WHERE status = 'SENT' AND sent_at < :threshold", nativeQuery = true)

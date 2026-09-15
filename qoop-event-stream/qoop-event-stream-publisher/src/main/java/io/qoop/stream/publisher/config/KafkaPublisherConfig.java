@@ -38,7 +38,7 @@ public class KafkaPublisherConfig {
     }
 
     // Required for managing transactions on the consumer side
-    @Bean
+    @Bean(name = "kafkaTransactionManager")
     public KafkaTransactionManager<String, Object> transactionManager(ProducerFactory<String, Object> producerFactory) {
         if (kafkaProperties.getTransaction().isEnabled()) {
             return new KafkaTransactionManager<>(producerFactory);

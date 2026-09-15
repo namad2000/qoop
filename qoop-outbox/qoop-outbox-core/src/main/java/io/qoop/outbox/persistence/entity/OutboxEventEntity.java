@@ -4,8 +4,6 @@ import io.qoop.outbox.OutboxStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,8 +15,8 @@ import java.util.UUID;
 public class OutboxEventEntity {
 
     @Id
-    @Column(name = "id", nullable = false, updatable = false)
-    private UUID id = UUID.randomUUID(); // Unique identifier (Outbox message ID)
+    @Column(name = "id", nullable = false, updatable = false, columnDefinition = "RAW(16)")
+    private UUID id = UUID.randomUUID();
 
     @Column(name = "aggregatetype", nullable = false, length = 100)
     private String aggregateType; // Type of the aggregate or entity generating the event (e.g., Order)
@@ -32,15 +30,11 @@ public class OutboxEventEntity {
     @Column(name = "topic", nullable = false, length = 200)
     private String topic; // Destination Kafka topic where the message should be sent (single topic per record for Debezium compatibility)
 
-    @Lob
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "payload", nullable = false, columnDefinition = "json")
-    private String payload; // The main body and data of the message in JSON structure
+    @Column(name = "payload", nullable = false, columnDefinition = "CLOB")
+    private String payload = "{}";
 
-    @Lob
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "headers", columnDefinition = "json")
-    private String headers; // Associated metadata and headers of the message in JSON structure
+    @Column(name = "headers", columnDefinition = "CLOB")
+    private String headers = "[]";
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)

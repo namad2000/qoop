@@ -8,8 +8,11 @@ import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * ItemReader implementation for reading outbox events in a partitioned manner.
@@ -25,6 +28,7 @@ public class OutboxReader implements ItemReader<OutboxEventEntity> {
     private final Integer gridSize;
 
     private Iterator<OutboxEventEntity> currentBatch;
+    private final Set<UUID> processedIds = new HashSet<>();
 
     public OutboxReader(
             OutboxEventJpaRepository repository,
@@ -51,10 +55,21 @@ public class OutboxReader implements ItemReader<OutboxEventEntity> {
                 return null;
             }
 
-            currentBatch = events.iterator();
-            log.debug("Loaded {} events for partitionIndex: {} of gridSize: {}", events.size(), partitionIndex, gridSize);
+            List<OutboxEventEntity> newEvents = events.stream()
+                    .filter(e -> !processedIds.contains(e.getId()))
+                    .toList();
+
+            if (newEvents.isEmpty()) {
+                log.debug("All fetched events were already read in this step execution.");
+                return null;
+            }
+
+            currentBatch = newEvents.iterator();
+            log.debug("Loaded {} new events for partitionIndex: {}", newEvents.size(), partitionIndex);
         }
 
-        return currentBatch.next();
+        OutboxEventEntity nextEvent = currentBatch.next();
+        processedIds.add(nextEvent.getId());
+        return nextEvent;
     }
 }

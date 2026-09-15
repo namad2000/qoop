@@ -1,7 +1,8 @@
 package io.qoop.transaction.core;
 
-import io.qoop.transaction.api.DomainTransaction;
+import io.qoop.transaction.api.DomainTransactional;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,22 +10,30 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.lang.reflect.Method;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DomainTransactionAspectTest {
+@MockitoSettings(strictness = Strictness.LENIENT)
+class DomainTransactionalAspectTest {
 
     @Mock
     PlatformTransactionManager transactionManager;
 
     @Mock
     ProceedingJoinPoint joinPoint;
+
+    @Mock
+    MethodSignature methodSignature;
 
     @Mock
     TransactionStatus txStatus;
@@ -34,52 +43,69 @@ class DomainTransactionAspectTest {
 
     private DomainTransactionAspect aspect;
 
-    @BeforeEach
-    void setUp() {
-        // Create the Aspect with a mocked TransactionManager
-        aspect = new DomainTransactionAspect(transactionManager);
+    // Dummy classes for reflection mocking in tests
+    static class TestService {
+        @DomainTransactional(value = DomainTransactional.TxType.REQUIRES_NEW)
+        public void methodRequiresNew() {}
 
-        // Whenever getTransaction is called, return a mocked TransactionStatus
-        when(transactionManager.getTransaction(any(TransactionDefinition.class)))
-                .thenReturn(txStatus);
+        @DomainTransactional(value = DomainTransactional.TxType.SUPPORTS)
+        public void methodSupports() {}
+
+        @DomainTransactional(value = DomainTransactional.TxType.REQUIRED)
+        public void methodRequired() {}
+
+        @DomainTransactional(
+                rollbackOn = {MyCheckedException.class},
+                dontRollbackOn = {MyCustomRuntimeException.class}
+        )
+        public void methodCustomExceptions() {}
     }
 
-    // ---------------- Propagation-related tests (no Exception) ----------------
+    static class MyCustomRuntimeException extends RuntimeException {}
+    static class MyCheckedException extends Exception {}
+
+    @BeforeEach
+    void setUp() {
+        aspect = new DomainTransactionAspect(transactionManager);
+
+        when(transactionManager.getTransaction(any(TransactionDefinition.class)))
+                .thenReturn(txStatus);
+
+        when(joinPoint.getSignature()).thenReturn(methodSignature);
+    }
+
+    private void mockMethod(String methodName) throws NoSuchMethodException {
+        Method method = TestService.class.getMethod(methodName);
+        when(methodSignature.getMethod()).thenReturn(method);
+    }
+
+    // ---------------- Propagation-related tests ----------------
 
     @Test
     void should_setPropagation_requiresNew_when_annotation_requiresNew() throws Throwable {
-        // Mock the annotation with REQUIRES_NEW value
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.REQUIRES_NEW);
-
-        // Successful execution of the target method
+        mockMethod("methodRequiresNew");
         when(joinPoint.proceed()).thenReturn("OK");
 
-        Object result = aspect.handleTransaction(joinPoint, ann);
+        Object result = aspect.handleTransaction(joinPoint);
 
-        // Verify the result
         assertEquals("OK", result);
 
-        // Verify that propagation behavior is set correctly
         verify(transactionManager).getTransaction(defCaptor.capture());
         assertEquals(
                 TransactionDefinition.PROPAGATION_REQUIRES_NEW,
                 defCaptor.getValue().getPropagationBehavior()
         );
 
-        // Transaction should be committed and rollback must not be called
         verify(transactionManager).commit(txStatus);
         verify(transactionManager, never()).rollback(any());
     }
 
     @Test
     void should_setPropagation_supports_when_annotation_supports() throws Throwable {
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.SUPPORTS);
-
+        mockMethod("methodSupports");
         when(joinPoint.proceed()).thenReturn("OK");
 
-        Object result = aspect.handleTransaction(joinPoint, ann);
+        Object result = aspect.handleTransaction(joinPoint);
 
         assertEquals("OK", result);
 
@@ -95,13 +121,10 @@ class DomainTransactionAspectTest {
 
     @Test
     void should_setPropagation_required_byDefault_when_otherwise() throws Throwable {
-        // Default case (neither REQUIRES_NEW nor SUPPORTS)
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.REQUIRED);
-
+        mockMethod("methodRequired");
         when(joinPoint.proceed()).thenReturn("OK");
 
-        Object result = aspect.handleTransaction(joinPoint, ann);
+        Object result = aspect.handleTransaction(joinPoint);
 
         assertEquals("OK", result);
 
@@ -117,13 +140,10 @@ class DomainTransactionAspectTest {
 
     @Test
     void should_commit_when_proceed_successful() throws Throwable {
-        // If the target method executes successfully, transaction must be committed
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.REQUIRED);
-
+        mockMethod("methodRequired");
         when(joinPoint.proceed()).thenReturn(123);
 
-        Object result = aspect.handleTransaction(joinPoint, ann);
+        Object result = aspect.handleTransaction(joinPoint);
 
         assertEquals(123, result);
         verify(transactionManager).commit(txStatus);
@@ -134,37 +154,30 @@ class DomainTransactionAspectTest {
 
     @Test
     void should_rollback_on_runtimeException_byDefault() throws Throwable {
-        // By default, RuntimeException should trigger a rollback
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.REQUIRED);
-        when(ann.dontRollbackOn()).thenReturn(new Class[0]);
-        when(ann.rollbackOn()).thenReturn(new Class[0]);
-
+        mockMethod("methodRequired");
         RuntimeException ex = new RuntimeException("boom");
         when(joinPoint.proceed()).thenThrow(ex);
 
-        RuntimeException thrown =
-                assertThrows(RuntimeException.class,
-                        () -> aspect.handleTransaction(joinPoint, ann));
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> aspect.handleTransaction(joinPoint)
+        );
 
         assertSame(ex, thrown);
-
         verify(transactionManager).rollback(txStatus);
         verify(transactionManager, never()).commit(txStatus);
     }
 
     @Test
     void should_commit_on_runtimeException_when_in_dontRollbackOn() throws Throwable {
-        // If RuntimeException is listed in dontRollbackOn, rollback must not happen
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.REQUIRED);
-        when(ann.dontRollbackOn()).thenReturn(new Class[]{RuntimeException.class});
-
-        RuntimeException ex = new RuntimeException("boom");
+        mockMethod("methodCustomExceptions");
+        MyCustomRuntimeException ex = new MyCustomRuntimeException();
         when(joinPoint.proceed()).thenThrow(ex);
 
-        assertThrows(RuntimeException.class,
-                () -> aspect.handleTransaction(joinPoint, ann));
+        assertThrows(
+                MyCustomRuntimeException.class,
+                () -> aspect.handleTransaction(joinPoint)
+        );
 
         verify(transactionManager).commit(txStatus);
         verify(transactionManager, never()).rollback(any());
@@ -172,50 +185,30 @@ class DomainTransactionAspectTest {
 
     @Test
     void should_rollback_on_checkedException_when_in_rollbackOn() throws Throwable {
-        // Checked exception listed in rollbackOn should cause rollback
-        class MyCheckedException extends Exception {
-            MyCheckedException(String m) {
-                super(m);
-            }
-        }
-
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.REQUIRED);
-        when(ann.dontRollbackOn()).thenReturn(new Class[0]);
-        when(ann.rollbackOn()).thenReturn(new Class[]{MyCheckedException.class});
-
-        MyCheckedException ex = new MyCheckedException("checked");
+        mockMethod("methodCustomExceptions");
+        MyCheckedException ex = new MyCheckedException();
         when(joinPoint.proceed()).thenThrow(ex);
 
-        Exception thrown =
-                assertThrows(Exception.class,
-                        () -> aspect.handleTransaction(joinPoint, ann));
+        MyCheckedException thrown = assertThrows(
+                MyCheckedException.class,
+                () -> aspect.handleTransaction(joinPoint)
+        );
 
         assertSame(ex, thrown);
-
         verify(transactionManager).rollback(txStatus);
         verify(transactionManager, never()).commit(txStatus);
     }
 
     @Test
     void should_commit_on_checkedException_when_notListed_anywhere() throws Throwable {
-        // Checked exception that is not RuntimeException and not listed in rollbackOn → commit
-        class MyCheckedException extends Exception {
-            MyCheckedException(String m) {
-                super(m);
-            }
-        }
-
-        DomainTransaction ann = mock(DomainTransaction.class);
-        when(ann.value()).thenReturn(DomainTransaction.TxType.REQUIRED);
-        when(ann.dontRollbackOn()).thenReturn(new Class[0]);
-        when(ann.rollbackOn()).thenReturn(new Class[0]);
-
-        MyCheckedException ex = new MyCheckedException("checked");
+        mockMethod("methodRequired");
+        MyCheckedException ex = new MyCheckedException();
         when(joinPoint.proceed()).thenThrow(ex);
 
-        assertThrows(Exception.class,
-                () -> aspect.handleTransaction(joinPoint, ann));
+        assertThrows(
+                Exception.class,
+                () -> aspect.handleTransaction(joinPoint)
+        );
 
         verify(transactionManager).commit(txStatus);
         verify(transactionManager, never()).rollback(any());
@@ -225,16 +218,19 @@ class DomainTransactionAspectTest {
 
     @Test
     void should_read_annotation_from_class_when_method_annotation_is_null() throws Throwable {
-        // If the method does not have the annotation, it should be read from the class
-        @DomainTransaction(value = DomainTransaction.TxType.REQUIRES_NEW)
-        class Target {
+        @DomainTransactional(value = DomainTransactional.TxType.REQUIRES_NEW)
+        class ClassAnnotatedTarget {
+            public void unannotatedMethod() {}
         }
 
-        Target target = new Target();
+        ClassAnnotatedTarget target = new ClassAnnotatedTarget();
+        Method unannotatedMethod = ClassAnnotatedTarget.class.getMethod("unannotatedMethod");
+
+        when(methodSignature.getMethod()).thenReturn(unannotatedMethod);
         when(joinPoint.getTarget()).thenReturn(target);
         when(joinPoint.proceed()).thenReturn("OK");
 
-        Object result = aspect.handleTransaction(joinPoint, null);
+        Object result = aspect.handleTransaction(joinPoint);
 
         assertEquals("OK", result);
 

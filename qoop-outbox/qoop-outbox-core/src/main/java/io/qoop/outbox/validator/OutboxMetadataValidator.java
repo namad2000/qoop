@@ -1,6 +1,7 @@
 package io.qoop.outbox.validator;
 
 import io.qoop.outbox.OutBoxEvent;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,13 +14,13 @@ public class OutboxMetadataValidator {
         if (payload == null) {
             throw new IllegalArgumentException("Payload cannot be null.");
         }
+        Class<?> clazz = AopUtils.getTargetClass(payload);
 
-        Class<?> clazz = payload.getClass();
-        if (!clazz.isAnnotationPresent(OutBoxEvent.class)) {
+        OutBoxEvent annotation = clazz.getAnnotation(OutBoxEvent.class);
+        if (annotation == null) {
             throw new IllegalArgumentException("Payload class must be annotated with @OutBoxEvent: " + clazz.getName());
-
         }
 
-        return clazz.getAnnotation(OutBoxEvent.class);
+        return annotation;
     }
 }

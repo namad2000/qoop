@@ -1,9 +1,11 @@
 package io.qoop.outbox.service;
 
+import io.qoop.outbox.OutboxStatus;
 import io.qoop.outbox.persistence.entity.ErrorMessageEntity;
+import io.qoop.outbox.persistence.entity.OutboxEventEntity;
 import io.qoop.outbox.persistence.repository.ErrorMessageJpaRepository;
 import io.qoop.outbox.persistence.repository.OutboxEventJpaRepository;
-import org.springframework.dao.OptimisticLockingFailureException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +26,14 @@ public class OutboxErrorLogService {
 
     // Executes in a completely independent transaction and enforces version check
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handleFailure(UUID eventId, Long version, ErrorMessageEntity errorMessage) {
-        int updatedRows = outboxEventJpaRepository.markAsFailed(eventId, version);
-        if (updatedRows == 0) {
-            throw new OptimisticLockingFailureException("Optimistic lock failure: Outbox event already modified by another instance for ID: " + eventId);
-        }
+    public void handleFailure(UUID eventId, Long expectedVersion, ErrorMessageEntity errorMessage) {
+        OutboxEventEntity entity = outboxEventJpaRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Outbox event not found for ID: " + eventId));
+
+        entity.setStatus(OutboxStatus.FAILED);
+        entity.setRetryCount(entity.getRetryCount() + 1);
+
+        outboxEventJpaRepository.save(entity);
         errorMessageJpaRepository.save(errorMessage);
     }
 }

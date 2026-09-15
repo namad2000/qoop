@@ -13,12 +13,12 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Mapper(config = CommonsMapperConfig.class, imports = {UUID.class, Instant.class})
-public interface ErrorMessageMapper {
+public interface ErrorMessageMapper extends BaseMapper {
 
-    @Mapping(target = "id", expression = "java(message.eventId() != null ? message.eventId() : UUID.randomUUID())")
+    @Mapping(target = "id", expression = "java(message != null && message.eventId() != null ? message.eventId() : UUID.randomUUID())")
     @Mapping(target = "topic", source = "message.topic")
     @Mapping(target = "key", source = "message.aggregateId")
-    @Mapping(target = "payload", source = "message.value", qualifiedByName = "mapPayloadToJson")
+    @Mapping(target = "payload", expression = "java(mapPayloadToErrorJson(message != null ? message.value() : null, objectMapper))")
     @Mapping(target = "errorMessage", expression = "java(ex != null ? truncateMessage(ex.getMessage(), 2000) : null)")
     @Mapping(target = "exceptionClass", expression = "java(ex != null ? ex.getClass().getName() : null)")
     @Mapping(target = "stackTrace", expression = "java(ex != null ? org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(ex) : null)")
@@ -26,18 +26,16 @@ public interface ErrorMessageMapper {
     @Mapping(target = "timestamp", expression = "java(Instant.now())")
     ErrorMessageEntity toEntity(KafkaMessage message, Exception ex, String correlationId, @Context ObjectMapper objectMapper);
 
-    @Named("mapPayloadToJson")
-    default String mapPayloadToJson(Object value, @Context ObjectMapper objectMapper) {
+    @Named("mapPayloadToErrorJson")
+    default String mapPayloadToErrorJson(Object value, @Context ObjectMapper objectMapper) {
         if (value == null) {
-            return null;
+            return "{}";
         }
-        if (value instanceof String str) {
-            return str;
-        }
+
         try {
-            return objectMapper.writeValueAsString(value);
+            return serializePayload(value, objectMapper);
         } catch (Exception e) {
-            return value.toString();
+            return "{\"raw_error_payload\":\"" + value.toString().replace("\"", "\\\"") + "\"}";
         }
     }
 
