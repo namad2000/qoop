@@ -1,6 +1,9 @@
 io.qoop.batch.core.DynamicJobLauncher
 io.qoop.batch.partition.factory.PartitionStrategyFactory
+io.qoop.batch.config.BatchKafkaProperties
 io.qoop.batch.config.BatchConfiguration
-io.qoop.batch.config.PartitionConfiguration
-
+io.qoop.batch.config.BatchPayloadConverter
+io.qoop.batch.config.BatchKafkaIntegrationConfig
+io.qoop.batch.config.BatchWorkerConfiguration
+io.qoop.batch.config.KafkaJacksonConfig
 

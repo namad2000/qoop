@@ -14,11 +14,14 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.NoSuchJobException;
+import org.springframework.batch.core.partition.PartitionStep;
+import org.springframework.batch.core.partition.Partitioner;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.Step;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +29,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Dynamically creates and executes jobs at runtime.
- * Developer only defines Steps and Jobs normally.
- * This class handles partitioning and strategy selection automatically.
+ * Dynamic job launcher that inspects jobs and dynamically wraps steps
+ * with runtime-evaluated partition strategies (Local vs Remote).
  */
 @Slf4j
 @Component
@@ -55,61 +57,86 @@ public class DynamicJobLauncher {
         log.info("Node: {}", nodeIdentity.getNodeId());
 
         Job originalJob = getJobFromRegistry(jobName);
-        log.info("Found job: {}", originalJob.getName());
-
         List<Step> jobSteps = extractStepsFromJob(originalJob);
-        log.info("Found {} steps in job: {}", jobSteps.size(),
-                jobSteps.stream().map(Step::getName).toList());
 
         if (jobSteps.isEmpty()) {
             throw new IllegalStateException("No steps found in job: " + jobName);
         }
 
+        // Runtime Strategy Decision
         PartitionStrategy strategy = strategyFactory.createStrategy();
-        log.info("Selected strategy: {}", strategy.getClass().getSimpleName());
+        log.info("Runtime strategy evaluated: {}", strategy.getClass().getSimpleName());
 
         List<Step> wrappedSteps = new ArrayList<>();
         for (Step step : jobSteps) {
+
+            // Extract custom partitioner if explicitly defined in original step
+            Partitioner customPartitioner = extractPartitionerFromStep(step);
+            if (customPartitioner != null) {
+                log.info("Custom Partitioner [{}] extracted from Step [{}]",
+                        customPartitioner.getClass().getSimpleName(), step.getName());
+            } else {
+                log.info("No custom Partitioner found on Step [{}]. Applying strategy default.", step.getName());
+            }
+
             Step wrappedStep = strategy.createPartitionStep(
                     step.getName() + "-partitioned",
                     jobRepository,
                     null,
-                    step
+                    step,
+                    customPartitioner
             );
             wrappedSteps.add(wrappedStep);
-            log.info("Wrapped step: {}", step.getName());
         }
 
         String dynamicJobName = jobName + "-" + UUID.randomUUID().toString().substring(0, 6);
         var jobBuilder = new JobBuilder(dynamicJobName, jobRepository)
-                .start(wrappedSteps.get(0));
+                .start(wrappedSteps.getFirst());
 
         for (int i = 1; i < wrappedSteps.size(); i++) {
             jobBuilder = jobBuilder.next(wrappedSteps.get(i));
         }
 
         Job dynamicJob = jobBuilder.build();
-        log.info("Created dynamic job: {} with {} steps", dynamicJob.getName(), wrappedSteps.size());
 
         JobParametersBuilder params = new JobParametersBuilder()
                 .addString("jobId", UUID.randomUUID().toString())
                 .addString("nodeId", nodeIdentity.getNodeId())
                 .addString("originalJobName", jobName)
                 .addString("strategy", strategy.getClass().getSimpleName())
-                .addLong("stepCount", (long) wrappedSteps.size())
                 .addLong("timestamp", System.currentTimeMillis());
-
-        log.info("Executing dynamic job: {}", dynamicJob.getName());
 
         return jobOperator.start(dynamicJob, params.toJobParameters());
     }
 
     /**
-     * Executes job with default name.
+     * Inspects target Step to extract configured Partitioner instance.
      */
-    @SneakyThrows
-    public JobExecution runDynamicJob() {
-        return runDynamicJob("defaultJob");
+    private Partitioner extractPartitionerFromStep(Step step) {
+        if (step == null) {
+            return null;
+        }
+
+        if (step instanceof PartitionStep partitionStep) {
+            try {
+                Field partitionerField = PartitionStep.class.getDeclaredField("partitioner");
+                partitionerField.setAccessible(true);
+                return (Partitioner) partitionerField.get(partitionStep);
+            } catch (Exception e) {
+                log.debug("Direct reflection on PartitionStep field failed: {}", e.getMessage());
+            }
+        }
+
+        try {
+            Method getPartitionerMethod = step.getClass().getMethod("getPartitioner");
+            Object result = getPartitionerMethod.invoke(step);
+            if (result instanceof Partitioner partitioner) {
+                return partitioner;
+            }
+        } catch (Exception ignored) {
+        }
+
+        return null;
     }
 
     private Job getJobFromRegistry(String jobName) throws NoSuchJobException {
@@ -120,13 +147,10 @@ public class DynamicJobLauncher {
         }
     }
 
-    /**
-     * Extracts steps from a job by inspecting AbstractJob API, reflection, or Bean lookup fallback.
-     */
+    @SuppressWarnings("unchecked")
     private List<Step> extractStepsFromJob(Job job) {
         List<Step> steps = new ArrayList<>();
 
-        // 1. Inspect AbstractJob step names directly
         if (job instanceof AbstractJob abstractJob) {
             Collection<String> stepNames = abstractJob.getStepNames();
             for (String stepName : stepNames) {

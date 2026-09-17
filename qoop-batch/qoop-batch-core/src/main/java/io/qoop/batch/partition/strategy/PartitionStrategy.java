@@ -1,12 +1,9 @@
 package io.qoop.batch.partition.strategy;
 
 import org.springframework.batch.core.partition.Partitioner;
-import org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.Step;
-import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.infrastructure.item.ExecutionContext;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.List;
@@ -16,41 +13,49 @@ import java.util.List;
  */
 public interface PartitionStrategy {
 
-    Step createPartitionStep(
+    /**
+     * Every strategy must provide its default Partitioner implementation.
+     */
+    Partitioner createDefaultPartitioner();
+
+    /**
+     * Default implementation using strategy's default partitioner.
+     */
+    default Step createPartitionStep(
             String stepName,
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
-            Step workerStep
-    );
+            Step workerStep) {
+        return createPartitionStep(stepName, jobRepository, transactionManager, workerStep, createDefaultPartitioner());
+    }
 
-    default Step createPartitionStepWithCustomPartitioner(
+    /**
+     * Creates a partitioned Step using either a custom partitioner or the fallback.
+     */
+    default Step createPartitionStep(
             String stepName,
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
             Step workerStep,
             Partitioner customPartitioner) {
 
-        int gridSize = getPartitionCount();
+        Partitioner partitionerToUse = (customPartitioner != null)
+                ? customPartitioner
+                : createDefaultPartitioner();
 
-        TaskExecutorPartitionHandler partitionHandler = new TaskExecutorPartitionHandler();
-        partitionHandler.setStep(workerStep);
-        partitionHandler.setGridSize(gridSize);
-
-        SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor("custom-partition-");
-        taskExecutor.setConcurrencyLimit(gridSize);
-        partitionHandler.setTaskExecutor(taskExecutor);
-
-        try {
-            partitionHandler.afterPropertiesSet();
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to initialize TaskExecutorPartitionHandler for custom partitioner", e);
-        }
-
-        return new StepBuilder(stepName, jobRepository)
-                .partitioner("workerStep", customPartitioner)
-                .partitionHandler(partitionHandler)
-                .build();
+        return createPartitionStepWithPartitioner(stepName, jobRepository, transactionManager, workerStep, partitionerToUse);
     }
+
+    /**
+     * Strategy-specific execution builder that binds the resolved Partitioner into Step infrastructure.
+     */
+    Step createPartitionStepWithPartitioner(
+            String stepName,
+            JobRepository jobRepository,
+            PlatformTransactionManager transactionManager,
+            Step workerStep,
+            Partitioner partitioner
+    );
 
     boolean isMaster();
 

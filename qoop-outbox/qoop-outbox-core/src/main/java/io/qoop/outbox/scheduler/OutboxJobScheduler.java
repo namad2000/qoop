@@ -20,7 +20,7 @@ public class OutboxJobScheduler {
     private final NodeIdentity nodeIdentity;
 
     @Scheduled(fixedDelayString = "${outbox.batch.fixed-delay:2000}")
-    @SchedulerLock(name = "outboxJob", lockAtMostFor = "1m", lockAtLeastFor = "5s")
+    @SchedulerLock(name = "${spring.application.name}-outboxJob", lockAtMostFor = "1m", lockAtLeastFor = "5s")
     public void run() {
         log.debug("Attempting to start outboxJob execution on node: {}", nodeIdentity.getNodeId());
 

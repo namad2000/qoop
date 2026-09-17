@@ -13,12 +13,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@DisplayName("Partition Strategy Interface Tests")
+@DisplayName("Partition Strategy Interface Unit Tests")
 class PartitionStrategyTest {
 
     @Test
-    @DisplayName("Default createPartitionStepWithCustomPartitioner should work")
+    @DisplayName("Default createPartitionStep with custom Partitioner should delegate properly")
     void defaultCreatePartitionStepWithCustomPartitionerShouldWork() {
         // Given
         TestPartitionStrategy strategy = new TestPartitionStrategy();
@@ -28,7 +29,7 @@ class PartitionStrategyTest {
         Partitioner customPartitioner = mock(Partitioner.class);
 
         // When
-        Step result = strategy.createPartitionStepWithCustomPartitioner(
+        Step result = strategy.createPartitionStep(
                 "test-step",
                 jobRepository,
                 transactionManager,
@@ -42,7 +43,29 @@ class PartitionStrategyTest {
     }
 
     @Test
-    @DisplayName("putValue should create correct ExecutionContext")
+    @DisplayName("Default createPartitionStep without Partitioner should fallback to default partitioner")
+    void defaultCreatePartitionStepWithoutPartitionerShouldWork() {
+        // Given
+        TestPartitionStrategy strategy = new TestPartitionStrategy();
+        JobRepository jobRepository = mock(JobRepository.class);
+        PlatformTransactionManager transactionManager = mock(PlatformTransactionManager.class);
+        Step workerStep = mock(Step.class);
+
+        // When
+        Step result = strategy.createPartitionStep(
+                "test-step-no-partitioner",
+                jobRepository,
+                transactionManager,
+                workerStep
+        );
+
+        // Then
+        assertNotNull(result);
+        assertThat(result.getName()).isEqualTo("test-step-no-partitioner");
+    }
+
+    @Test
+    @DisplayName("putValue should correctly populate ExecutionContext properties")
     void putValueShouldCreateCorrectExecutionContext() {
         // Given
         TestPartitionStrategy strategy = new TestPartitionStrategy();
@@ -56,37 +79,33 @@ class PartitionStrategyTest {
         // Then
         assertNotNull(context);
 
-        Object partitionIndex = context.get("partitionIndex");
-        Object nodeId = context.get("nodeId");
-        Object isLocal = context.get("isLocal");
-        Object contextChunkSize = context.get("chunkSize");
-        Object startIndex = context.get("startIndex");
-        Object endIndex = context.get("endIndex");
-        Object timestamp = context.get("timestamp");
-
-        assertNotNull(partitionIndex);
-        assertNotNull(nodeId);
-        assertNotNull(isLocal);
-        assertNotNull(contextChunkSize);
-        assertNotNull(startIndex);
-        assertNotNull(endIndex);
-        assertNotNull(timestamp);
-
-        assertThat(partitionIndex).isEqualTo(3);
-        assertThat(nodeId).isEqualTo("node-1");
-        assertThat(isLocal).isEqualTo(true);
-        assertThat(contextChunkSize).isEqualTo(10);
-        assertThat(startIndex).isEqualTo(30);
-        assertThat(endIndex).isEqualTo(39);
-        assertThat(timestamp).isNotNull();
+        assertThat(context.get("partitionIndex")).isEqualTo(3);
+        assertThat(context.get("gridSize")).isEqualTo(4);
+        assertThat(context.get("nodeId")).isEqualTo("node-1");
+        assertThat(context.get("isLocal")).isEqualTo(true);
+        assertThat(context.get("chunkSize")).isEqualTo(10);
+        assertThat(context.get("startIndex")).isEqualTo(30);
+        assertThat(context.get("endIndex")).isEqualTo(39);
+        assertThat(context.get("timestamp")).isNotNull();
     }
 
     private static class TestPartitionStrategy implements PartitionStrategy {
+
         @Override
-        public Step createPartitionStep(String stepName, JobRepository jobRepository,
-                                        PlatformTransactionManager transactionManager,
-                                        Step workerStep) {
-            return mock(Step.class);
+        public Partitioner createDefaultPartitioner() {
+            return mock(Partitioner.class);
+        }
+
+        @Override
+        public Step createPartitionStepWithPartitioner(
+                String stepName,
+                JobRepository jobRepository,
+                PlatformTransactionManager transactionManager,
+                Step workerStep,
+                Partitioner partitioner) {
+            Step mockStep = mock(Step.class);
+            when(mockStep.getName()).thenReturn(stepName);
+            return mockStep;
         }
 
         @Override

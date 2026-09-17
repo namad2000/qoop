@@ -13,7 +13,6 @@ import org.springframework.kafka.transaction.KafkaTransactionManager;
 
 import java.util.Map;
 
-@Configuration
 @RequiredArgsConstructor
 @AutoConfiguration(before = KafkaAutoConfiguration.class)
 public class KafkaPublisherConfig {

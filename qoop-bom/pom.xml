@@ -347,6 +347,12 @@
                 <artifactId>qoop-validation</artifactId>
                 <version>${qoop.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>io.qoop</groupId>
+                <artifactId>qoop-event-stream-starter</artifactId>
+                <version>${qoop-event-stream.version}</version>
+            </dependency>
             <dependency>
                 <groupId>io.qoop</groupId>
                 <artifactId>qoop-event-stream-api</artifactId>
@@ -362,6 +368,8 @@
                 <artifactId>qoop-event-stream-subscriber</artifactId>
                 <version>${qoop-event-stream.version}</version>
             </dependency>
+
+
             <dependency>
                 <groupId>io.qoop</groupId>
                 <artifactId>qoop-data-jpa-api</artifactId>

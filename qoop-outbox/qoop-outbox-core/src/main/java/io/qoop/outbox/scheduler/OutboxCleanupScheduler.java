@@ -47,7 +47,7 @@ public class OutboxCleanupScheduler {
      * In DEBEZIUM mode: Deletes all events older than threshold</p>
      */
     @Scheduled(cron = "${outbox.cleanup.cron:0 0 3 * * *}")
-    @SchedulerLock(name = "outboxCleanup", lockAtMostFor = "10m", lockAtLeastFor = "1m")
+    @SchedulerLock(name = "${spring.application.name}-outboxCleanup", lockAtMostFor = "10m", lockAtLeastFor = "1m")
     public void cleanup() {
         int retentionDays = getRetentionDays();
         LocalDateTime threshold = LocalDateTime.now().minusDays(retentionDays);

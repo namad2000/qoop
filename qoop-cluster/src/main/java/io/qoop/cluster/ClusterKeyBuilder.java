@@ -22,7 +22,7 @@ public class ClusterKeyBuilder {
 
     private final String appName;
 
-    public ClusterKeyBuilder(@Value("${spring.application.name:app}") String appName) {
+    public ClusterKeyBuilder(@Value("${spring.application.name}") String appName) {
         this.appName = appName;
     }
 

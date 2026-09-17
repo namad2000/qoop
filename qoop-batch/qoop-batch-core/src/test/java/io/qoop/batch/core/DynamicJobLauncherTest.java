@@ -153,7 +153,7 @@ class DynamicJobLauncherTest {
         lenient().when(jobOperator.start(any(Job.class), any(JobParameters.class))).thenReturn(jobExecution);
 
         // When
-        launcher.runDynamicJob();
+        launcher.runDynamicJob("defaultJob");
 
         // Then
         verify(jobRegistry).getJob(defaultJobName);

@@ -29,15 +29,31 @@ public class LocalPartitionStrategy implements PartitionStrategy {
     private final boolean kafkaEnabled;
 
     @Override
-    public Step createPartitionStep(
+    public Partitioner createDefaultPartitioner() {
+        return gridSize -> {
+            Map<String, ExecutionContext> partitions = new ConcurrentHashMap<>();
+            String selfId = nodeIdentity.getNodeId();
+
+            log.info("Creating {} local partitions on node: {}", gridSize, selfId);
+
+            for (int i = 0; i < gridSize; i++) {
+                ExecutionContext context = putValue(selfId, i, chunkSize);
+                partitions.put("partition-" + i, context);
+            }
+
+            return partitions;
+        };
+    }
+
+    @Override
+    public Step createPartitionStepWithPartitioner(
             String stepName,
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
-            Step workerStep) {
+            Step workerStep,
+            Partitioner partitioner) {
 
         log.info("Creating LOCAL partition step: {} with {} partitions", stepName, partitionCount);
-
-        Partitioner localPartitioner = createLocalPartitioner();
 
         TaskExecutorPartitionHandler partitionHandler = new TaskExecutorPartitionHandler();
         partitionHandler.setStep(workerStep);
@@ -54,59 +70,9 @@ public class LocalPartitionStrategy implements PartitionStrategy {
         }
 
         return new StepBuilder(stepName, jobRepository)
-                .partitioner("workerStep", localPartitioner)
+                .partitioner("workerStep", partitioner)
                 .partitionHandler(partitionHandler)
                 .build();
-    }
-
-    @Override
-    public Step createPartitionStepWithCustomPartitioner(
-            String stepName,
-            JobRepository jobRepository,
-            PlatformTransactionManager transactionManager,
-            Step workerStep,
-            Partitioner customPartitioner) {
-
-        log.info("Creating LOCAL partition step with CUSTOM partitioner: {}",
-                customPartitioner.getClass().getSimpleName());
-
-        TaskExecutorPartitionHandler partitionHandler = new TaskExecutorPartitionHandler();
-        partitionHandler.setStep(workerStep);
-        partitionHandler.setGridSize(partitionCount);
-
-        SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor("local-partition-");
-        taskExecutor.setConcurrencyLimit(partitionCount);
-        partitionHandler.setTaskExecutor(taskExecutor);
-
-        try {
-            partitionHandler.afterPropertiesSet();
-        } catch (Exception e) {
-            log.error("Failed to initialize custom partition handler for step: {}", stepName, e);
-        }
-
-        return new StepBuilder(stepName, jobRepository)
-                .partitioner("workerStep", customPartitioner)
-                .partitionHandler(partitionHandler)
-                .build();
-    }
-
-    private Partitioner createLocalPartitioner() {
-        return new Partitioner() {
-            @Override
-            public Map<String, ExecutionContext> partition(int gridSize) {
-                Map<String, ExecutionContext> partitions = new ConcurrentHashMap<>();
-                String selfId = nodeIdentity.getNodeId();
-
-                log.info("Creating {} local partitions on node: {}", gridSize, selfId);
-
-                for (int i = 0; i < gridSize; i++) {
-                    ExecutionContext context = putValue(selfId, i, chunkSize);
-                    partitions.put("partition-" + i, context);
-                }
-
-                return partitions;
-            }
-        };
     }
 
     @Override

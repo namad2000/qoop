@@ -13,10 +13,53 @@
 
     <dependencies>
         <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Starters -->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-integration</artifactId>
+        </dependency>
+
+        <!-- Spring Batch Integration -->
+        <dependency>
+            <groupId>org.springframework.batch</groupId>
+            <artifactId>spring-batch-integration</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- qoop-event-stream integration -->
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-event-stream-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-event-stream-publisher</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.qoop</groupId>
+            <artifactId>qoop-event-stream-subscriber</artifactId>
+        </dependency>
+
+        <!-- qoop-cluster integration -->
         <dependency>
             <groupId>io.qoop</groupId>
             <artifactId>qoop-cluster</artifactId>

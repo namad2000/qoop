@@ -1,0 +1,16 @@
+batch:
+  kafka:
+    namespace: "outbox"
+    request-topic: "${spring.application.name}-outbox-requests"
+    reply-topic: "${spring.application.name}-outbox-replies"
+    group-id: "${spring.application.name}-outbox-group"
+    enabled: true
+  partition:
+    strategy:
+      force-local: false
+    grid-size: 8
+    chunk-size: 100
+  task-executor:
+    type: "qoop-async-outbox-${spring.application.name}"
+    thread-name-prefix: "report-batch-outbox-${spring.application.name}-"
+    concurrency-limit: 20

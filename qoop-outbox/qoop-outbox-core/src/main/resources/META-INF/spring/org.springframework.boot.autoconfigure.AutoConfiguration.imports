@@ -1,10 +1,10 @@
 io.qoop.outbox.OutboxEventPublisherAdapter
 io.qoop.outbox.AggregateIdExtractor
 io.qoop.outbox.service.OutboxErrorLogService
-io.qoop.outbox.config.OutboxPropertiesConfig
+io.qoop.outbox.config.OutboxConfig
 io.qoop.outbox.scheduler.OutboxCleanupScheduler
 io.qoop.outbox.scheduler.OutboxJobScheduler
-io.qoop.outbox.config.OutboxPropertiesConfig
+io.qoop.outbox.config.OutboxConfig
 io.qoop.outbox.job.OutboxBatchConfig
 io.qoop.outbox.job.step.OutboxReader
 io.qoop.outbox.job.step.OutboxProcessor

@@ -1,0 +1,8 @@
+spring:
+  jackson:
+    serialization:
+      fail-on-self-references: false
+    factory:
+      constraints:
+        write:
+          max-nesting-depth: ${batch.jackson.factory.constraints.write.max-nesting-depth:2000}
