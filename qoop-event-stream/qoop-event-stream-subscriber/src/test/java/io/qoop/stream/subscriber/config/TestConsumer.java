@@ -1,6 +1,7 @@
 package io.qoop.stream.subscriber.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -10,6 +11,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TestConsumer {
@@ -23,6 +25,8 @@ public class TestConsumer {
             Acknowledgment ack,
             ConsumerRecord<String, String> record
     ) {
+        log.info("TestConsumer received message: {} from topic: {} offset: {}",
+                msg, record.topic(), record.offset());
 
         counter.incrementAndGet();
 

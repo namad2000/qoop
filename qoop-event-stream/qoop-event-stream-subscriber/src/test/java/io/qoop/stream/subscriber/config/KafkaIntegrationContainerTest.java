@@ -6,6 +6,7 @@ import io.qoop.stream.starter.KafkaProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
@@ -26,9 +27,16 @@ import static org.awaitility.Awaitility.await;
 @SpringBootTest(
         properties = {
                 "event.stream.bootstrap-servers=${spring.embedded.kafka.brokers}",
-                "event.stream.dlq.global-dlq.enabled=false"
+                "event.stream.dlq.enabled=true",
+                "event.stream.dlq.suffix=DLT",
+                "event.stream.dlq.global-dlq.enabled=false",
+                "event.stream.retry.max-attempts=2",
+                "event.stream.retry.backoff-ms=100",
+                "logging.level.org.springframework.kafka=DEBUG",
+                "logging.level.io.qoop.stream=DEBUG"
         }
 )
+@EnableConfigurationProperties(KafkaProperties.class)
 @DirtiesContext
 @EmbeddedKafka(
         partitions = 1,
@@ -40,7 +48,6 @@ import static org.awaitility.Awaitility.await;
 @ContextConfiguration(classes = {
         KafkaPublisherConfig.class,
         KafkaSubscriberConfig.class,
-        KafkaProperties.class,
         EventSubscriberConfig.class,
 })
 public class KafkaIntegrationContainerTest {
@@ -57,14 +64,15 @@ public class KafkaIntegrationContainerTest {
     @Autowired
     private DefaultErrorHandler defaultErrorHandler;
 
-    private ConcurrentMessageListenerContainer<String, Object> mainContainer;
-    private ConcurrentMessageListenerContainer<String, Object> dlqContainer;
-
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
 
+    private ConcurrentMessageListenerContainer<String, Object> mainContainer;
+    private ConcurrentMessageListenerContainer<String, Object> dlqContainer;
+
     @AfterEach
     void tearDown() {
+        // Stop containers after each test execution to free up resources
         if (mainContainer != null) mainContainer.stop();
         if (dlqContainer != null) dlqContainer.stop();
     }
@@ -74,7 +82,7 @@ public class KafkaIntegrationContainerTest {
 
         BlockingQueue<ErrorMessage> dlqMessages = new LinkedBlockingQueue<>();
 
-        // === Main Consumer ===
+        // === Setup Main Consumer programmatically ===
         mainContainer = kafkaSubscriberConfig.kafkaListenerContainerFactory(defaultErrorHandler)
                 .createContainer("test-topic");
 
@@ -83,7 +91,7 @@ public class KafkaIntegrationContainerTest {
         });
         mainContainer.start();
 
-        // === DLQ Consumer ===
+        // === Setup DLQ Consumer programmatically ===
         dlqContainer = kafkaSubscriberConfig.kafkaListenerContainerFactory(defaultErrorHandler)
                 .createContainer("test-topic." + kafkaProperties.getDlq().getSuffix());
 
@@ -92,30 +100,30 @@ public class KafkaIntegrationContainerTest {
         });
         dlqContainer.start();
 
-        // === Send message to main topic ===
+        // === Send message to main topic inside a transaction ===
         kafkaTemplate.executeInTransaction(template -> {
             template.send("test-topic", "hello-world");
             return null;
         });
 
-        // === Wait until DLQ receives the message ===
+        // === Wait until DLQ receives the error message ===
         await().atMost(15, TimeUnit.SECONDS)
                 .until(() -> !dlqMessages.isEmpty());
 
-        // === Assertions ===
+        // === Assertions and verifications ===
         ErrorMessage errorMessage = dlqMessages.poll();
 
         assertThat(errorMessage).isNotNull();
 
-        // Original payload
+        // Validate original payload
         assertThat(errorMessage.getPayload()).isEqualTo("hello-world");
 
-        // Error info
+        // Validate error details
         assertThat(errorMessage.getErrorMessage()).contains("fail processing");
         assertThat(errorMessage.getExceptionClass()).contains("RuntimeException");
         assertThat(errorMessage.getStackTrace()).contains("RuntimeException");
 
-        // Metadata
+        // Validate metadata
         assertThat(errorMessage.getTopic()).isEqualTo("test-topic");
         assertThat(errorMessage.getTimestamp()).isNotNull();
     }
